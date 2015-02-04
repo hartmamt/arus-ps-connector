@@ -1,6 +1,6 @@
 {
   "name": "bl-connector-template",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha",
   "description": "A template for creating Black Lion Connectors",
   "main": "release/PSConnector.js",
   "scripts": {
