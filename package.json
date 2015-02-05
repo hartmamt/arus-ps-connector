@@ -1,7 +1,7 @@
 {
-  "name": "bl-connector",
-  "version": "0.1.4-alpha",
-  "description": "A template for creating Black Lion Connectors",
+  "name": "bl-ps-connector",
+  "version": "0.2.1-alpha",
+  "description": "A PeopleSoft Connector for Black Lion",
   "main": "PSConnector.js",
   "scripts": {
     "build": "webpack --progress --colors --watch",
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/arus-project/bl-connector-template.git"
+    "url": "https://github.com/Ganonside/bl-ps-connector.git"
   },
   "author": "Jon Horner",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/arus-project/bl-connector-template/issues"
+    "url": "https://github.com/arus-project/bl-ps-connector/issues"
   },
-  "homepage": "https://github.com/arus-project/bl-connector-template",
+  "homepage": "https://github.com/arus-project/bl-ps-connector",
   "dependencies": {
     "convict": "^0.6.1",
     "superagent": "^0.21.0",
