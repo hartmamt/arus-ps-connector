@@ -743,6 +743,24 @@ module.exports =
 	      get: function () {
 	        return this.name;
 	      },
+	      set: function (name) {
+	        var old = this.name;
+	        this.name = name;
+
+	        return old;
+	      },
+	      configurable: true
+	    },
+	    acadCareer: {
+	      get: function () {
+	        return this.acadCareer;
+	      },
+	      set: function (acadCareer) {
+	        var old = this.acadCareer;
+	        this.acadCareer = acadCareer;
+
+	        return old;
+	      },
 	      configurable: true
 	    }
 	  });
@@ -4367,8 +4385,8 @@ module.exports =
 	 */
 
 	var base64 = __webpack_require__(47)
-	var ieee754 = __webpack_require__(40)
-	var isArray = __webpack_require__(39)
+	var ieee754 = __webpack_require__(23)
+	var isArray = __webpack_require__(24)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = Buffer
@@ -5418,8 +5436,8 @@ module.exports =
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssign = __webpack_require__(23),
-	    createAssigner = __webpack_require__(24);
+	var baseAssign = __webpack_require__(25),
+	    createAssigner = __webpack_require__(26);
 
 	/**
 	 * Assigns own enumerable properties of source object(s) to the destination
@@ -5638,11 +5656,11 @@ module.exports =
 	    __hasProp = {}.hasOwnProperty,
 	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-	  create = __webpack_require__(25);
+	  create = __webpack_require__(27);
 
-	  isObject = __webpack_require__(26);
+	  isObject = __webpack_require__(28);
 
-	  XMLNode = __webpack_require__(34);
+	  XMLNode = __webpack_require__(29);
 
 	  module.exports = XMLDeclaration = (function(_super) {
 	    __extends(XMLDeclaration, _super);
@@ -5715,23 +5733,23 @@ module.exports =
 	(function() {
 	  var XMLCData, XMLComment, XMLDTDAttList, XMLDTDElement, XMLDTDEntity, XMLDTDNotation, XMLDocType, XMLProcessingInstruction, create, isObject;
 
-	  create = __webpack_require__(25);
+	  create = __webpack_require__(27);
 
-	  isObject = __webpack_require__(26);
+	  isObject = __webpack_require__(28);
 
-	  XMLCData = __webpack_require__(27);
+	  XMLCData = __webpack_require__(30);
 
-	  XMLComment = __webpack_require__(28);
+	  XMLComment = __webpack_require__(31);
 
-	  XMLDTDAttList = __webpack_require__(29);
+	  XMLDTDAttList = __webpack_require__(32);
 
-	  XMLDTDEntity = __webpack_require__(30);
+	  XMLDTDEntity = __webpack_require__(33);
 
-	  XMLDTDElement = __webpack_require__(31);
+	  XMLDTDElement = __webpack_require__(34);
 
-	  XMLDTDNotation = __webpack_require__(32);
+	  XMLDTDNotation = __webpack_require__(35);
 
-	  XMLProcessingInstruction = __webpack_require__(33);
+	  XMLProcessingInstruction = __webpack_require__(36);
 
 	  module.exports = XMLDocType = (function() {
 	    function XMLDocType(parent, pubID, sysID) {
@@ -5915,21 +5933,21 @@ module.exports =
 	    __hasProp = {}.hasOwnProperty,
 	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-	  create = __webpack_require__(25);
+	  create = __webpack_require__(27);
 
-	  isObject = __webpack_require__(26);
+	  isObject = __webpack_require__(28);
 
-	  isArray = __webpack_require__(35);
+	  isArray = __webpack_require__(37);
 
-	  isFunction = __webpack_require__(36);
+	  isFunction = __webpack_require__(38);
 
-	  every = __webpack_require__(37);
+	  every = __webpack_require__(39);
 
-	  XMLNode = __webpack_require__(34);
+	  XMLNode = __webpack_require__(29);
 
-	  XMLAttribute = __webpack_require__(38);
+	  XMLAttribute = __webpack_require__(40);
 
-	  XMLProcessingInstruction = __webpack_require__(33);
+	  XMLProcessingInstruction = __webpack_require__(36);
 
 	  module.exports = XMLElement = (function(_super) {
 	    __extends(XMLElement, _super);
@@ -6126,6 +6144,135 @@ module.exports =
 /* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
+	exports.read = function(buffer, offset, isLE, mLen, nBytes) {
+	  var e, m,
+	      eLen = nBytes * 8 - mLen - 1,
+	      eMax = (1 << eLen) - 1,
+	      eBias = eMax >> 1,
+	      nBits = -7,
+	      i = isLE ? (nBytes - 1) : 0,
+	      d = isLE ? -1 : 1,
+	      s = buffer[offset + i];
+
+	  i += d;
+
+	  e = s & ((1 << (-nBits)) - 1);
+	  s >>= (-nBits);
+	  nBits += eLen;
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+	  m = e & ((1 << (-nBits)) - 1);
+	  e >>= (-nBits);
+	  nBits += mLen;
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
+
+	  if (e === 0) {
+	    e = 1 - eBias;
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity);
+	  } else {
+	    m = m + Math.pow(2, mLen);
+	    e = e - eBias;
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
+	};
+
+	exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c,
+	      eLen = nBytes * 8 - mLen - 1,
+	      eMax = (1 << eLen) - 1,
+	      eBias = eMax >> 1,
+	      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
+	      i = isLE ? 0 : (nBytes - 1),
+	      d = isLE ? 1 : -1,
+	      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+
+	  value = Math.abs(value);
+
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0;
+	    e = eMax;
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2);
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--;
+	      c *= 2;
+	    }
+	    if (e + eBias >= 1) {
+	      value += rt / c;
+	    } else {
+	      value += rt * Math.pow(2, 1 - eBias);
+	    }
+	    if (value * c >= 2) {
+	      e++;
+	      c /= 2;
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0;
+	      e = eMax;
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen);
+	      e = e + eBias;
+	    } else {
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+	      e = 0;
+	    }
+	  }
+
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
+
+	  e = (e << mLen) | m;
+	  eLen += mLen;
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
+
+	  buffer[offset + i - d] |= s * 128;
+	};
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * isArray
+	 */
+
+	var isArray = Array.isArray;
+
+	/**
+	 * toString
+	 */
+
+	var str = Object.prototype.toString;
+
+	/**
+	 * Whether or not the given `val`
+	 * is an array.
+	 *
+	 * example:
+	 *
+	 *        isArray([]);
+	 *        // > true
+	 *        isArray(arguments);
+	 *        // > false
+	 *        isArray('');
+	 *        // > false
+	 *
+	 * @param {mixed} val
+	 * @return {bool}
+	 */
+
+	module.exports = isArray || function (val) {
+	  return !! val && '[object Array]' == str.call(val);
+	};
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var baseCopy = __webpack_require__(48),
 	    keys = __webpack_require__(49);
 
@@ -6164,7 +6311,7 @@ module.exports =
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var bindCallback = __webpack_require__(50),
@@ -6210,7 +6357,7 @@ module.exports =
 
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseCopy = __webpack_require__(48),
@@ -6262,7 +6409,7 @@ module.exports =
 
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -6298,470 +6445,7 @@ module.exports =
 
 
 /***/ },
-/* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLCData, XMLNode, create,
-	    __hasProp = {}.hasOwnProperty,
-	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-	  create = __webpack_require__(25);
-
-	  XMLNode = __webpack_require__(34);
-
-	  module.exports = XMLCData = (function(_super) {
-	    __extends(XMLCData, _super);
-
-	    function XMLCData(parent, text) {
-	      XMLCData.__super__.constructor.call(this, parent);
-	      if (text == null) {
-	        throw new Error("Missing CDATA text");
-	      }
-	      this.text = this.stringify.cdata(text);
-	    }
-
-	    XMLCData.prototype.clone = function() {
-	      return create(XMLCData.prototype, this);
-	    };
-
-	    XMLCData.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<![CDATA[' + this.text + ']]>';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLCData;
-
-	  })(XMLNode);
-
-	}).call(this);
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLComment, XMLNode, create,
-	    __hasProp = {}.hasOwnProperty,
-	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
-
-	  create = __webpack_require__(25);
-
-	  XMLNode = __webpack_require__(34);
-
-	  module.exports = XMLComment = (function(_super) {
-	    __extends(XMLComment, _super);
-
-	    function XMLComment(parent, text) {
-	      XMLComment.__super__.constructor.call(this, parent);
-	      if (text == null) {
-	        throw new Error("Missing comment text");
-	      }
-	      this.text = this.stringify.comment(text);
-	    }
-
-	    XMLComment.prototype.clone = function() {
-	      return create(XMLComment.prototype, this);
-	    };
-
-	    XMLComment.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<!-- ' + this.text + ' -->';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLComment;
-
-	  })(XMLNode);
-
-	}).call(this);
-
-
-/***/ },
 /* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLDTDAttList, create;
-
-	  create = __webpack_require__(25);
-
-	  module.exports = XMLDTDAttList = (function() {
-	    function XMLDTDAttList(parent, elementName, attributeName, attributeType, defaultValueType, defaultValue) {
-	      this.stringify = parent.stringify;
-	      if (elementName == null) {
-	        throw new Error("Missing DTD element name");
-	      }
-	      if (attributeName == null) {
-	        throw new Error("Missing DTD attribute name");
-	      }
-	      if (!attributeType) {
-	        throw new Error("Missing DTD attribute type");
-	      }
-	      if (!defaultValueType) {
-	        throw new Error("Missing DTD attribute default");
-	      }
-	      if (defaultValueType.indexOf('#') !== 0) {
-	        defaultValueType = '#' + defaultValueType;
-	      }
-	      if (!defaultValueType.match(/^(#REQUIRED|#IMPLIED|#FIXED|#DEFAULT)$/)) {
-	        throw new Error("Invalid default value type; expected: #REQUIRED, #IMPLIED, #FIXED or #DEFAULT");
-	      }
-	      if (defaultValue && !defaultValueType.match(/^(#FIXED|#DEFAULT)$/)) {
-	        throw new Error("Default value only applies to #FIXED or #DEFAULT");
-	      }
-	      this.elementName = this.stringify.eleName(elementName);
-	      this.attributeName = this.stringify.attName(attributeName);
-	      this.attributeType = this.stringify.dtdAttType(attributeType);
-	      this.defaultValue = this.stringify.dtdAttDefault(defaultValue);
-	      this.defaultValueType = defaultValueType;
-	    }
-
-	    XMLDTDAttList.prototype.clone = function() {
-	      return create(XMLDTDAttList.prototype, this);
-	    };
-
-	    XMLDTDAttList.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<!ATTLIST ' + this.elementName + ' ' + this.attributeName + ' ' + this.attributeType;
-	      if (this.defaultValueType !== '#DEFAULT') {
-	        r += ' ' + this.defaultValueType;
-	      }
-	      if (this.defaultValue) {
-	        r += ' "' + this.defaultValue + '"';
-	      }
-	      r += '>';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLDTDAttList;
-
-	  })();
-
-	}).call(this);
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLDTDEntity, create, isObject;
-
-	  create = __webpack_require__(25);
-
-	  isObject = __webpack_require__(26);
-
-	  module.exports = XMLDTDEntity = (function() {
-	    function XMLDTDEntity(parent, pe, name, value) {
-	      this.stringify = parent.stringify;
-	      if (name == null) {
-	        throw new Error("Missing entity name");
-	      }
-	      if (value == null) {
-	        throw new Error("Missing entity value");
-	      }
-	      this.pe = !!pe;
-	      this.name = this.stringify.eleName(name);
-	      if (!isObject(value)) {
-	        this.value = this.stringify.dtdEntityValue(value);
-	      } else {
-	        if (!value.pubID && !value.sysID) {
-	          throw new Error("Public and/or system identifiers are required for an external entity");
-	        }
-	        if (value.pubID && !value.sysID) {
-	          throw new Error("System identifier is required for a public external entity");
-	        }
-	        if (value.pubID != null) {
-	          this.pubID = this.stringify.dtdPubID(value.pubID);
-	        }
-	        if (value.sysID != null) {
-	          this.sysID = this.stringify.dtdSysID(value.sysID);
-	        }
-	        if (value.nData != null) {
-	          this.nData = this.stringify.dtdNData(value.nData);
-	        }
-	        if (this.pe && this.nData) {
-	          throw new Error("Notation declaration is not allowed in a parameter entity");
-	        }
-	      }
-	    }
-
-	    XMLDTDEntity.prototype.clone = function() {
-	      return create(XMLDTDEntity.prototype, this);
-	    };
-
-	    XMLDTDEntity.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<!ENTITY';
-	      if (this.pe) {
-	        r += ' %';
-	      }
-	      r += ' ' + this.name;
-	      if (this.value) {
-	        r += ' "' + this.value + '"';
-	      } else {
-	        if (this.pubID && this.sysID) {
-	          r += ' PUBLIC "' + this.pubID + '" "' + this.sysID + '"';
-	        } else if (this.sysID) {
-	          r += ' SYSTEM "' + this.sysID + '"';
-	        }
-	        if (this.nData) {
-	          r += ' NDATA ' + this.nData;
-	        }
-	      }
-	      r += '>';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLDTDEntity;
-
-	  })();
-
-	}).call(this);
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLDTDElement, create, isArray;
-
-	  create = __webpack_require__(25);
-
-	  isArray = __webpack_require__(35);
-
-	  module.exports = XMLDTDElement = (function() {
-	    function XMLDTDElement(parent, name, value) {
-	      this.stringify = parent.stringify;
-	      if (name == null) {
-	        throw new Error("Missing DTD element name");
-	      }
-	      if (!value) {
-	        value = '(#PCDATA)';
-	      }
-	      if (isArray(value)) {
-	        value = '(' + value.join(',') + ')';
-	      }
-	      this.name = this.stringify.eleName(name);
-	      this.value = this.stringify.dtdElementValue(value);
-	    }
-
-	    XMLDTDElement.prototype.clone = function() {
-	      return create(XMLDTDElement.prototype, this);
-	    };
-
-	    XMLDTDElement.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<!ELEMENT ' + this.name + ' ' + this.value + '>';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLDTDElement;
-
-	  })();
-
-	}).call(this);
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLDTDNotation, create;
-
-	  create = __webpack_require__(25);
-
-	  module.exports = XMLDTDNotation = (function() {
-	    function XMLDTDNotation(parent, name, value) {
-	      this.stringify = parent.stringify;
-	      if (name == null) {
-	        throw new Error("Missing notation name");
-	      }
-	      if (!value.pubID && !value.sysID) {
-	        throw new Error("Public or system identifiers are required for an external entity");
-	      }
-	      this.name = this.stringify.eleName(name);
-	      if (value.pubID != null) {
-	        this.pubID = this.stringify.dtdPubID(value.pubID);
-	      }
-	      if (value.sysID != null) {
-	        this.sysID = this.stringify.dtdSysID(value.sysID);
-	      }
-	    }
-
-	    XMLDTDNotation.prototype.clone = function() {
-	      return create(XMLDTDNotation.prototype, this);
-	    };
-
-	    XMLDTDNotation.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<!NOTATION ' + this.name;
-	      if (this.pubID && this.sysID) {
-	        r += ' PUBLIC "' + this.pubID + '" "' + this.sysID + '"';
-	      } else if (this.pubID) {
-	        r += ' PUBLIC "' + this.pubID + '"';
-	      } else if (this.sysID) {
-	        r += ' SYSTEM "' + this.sysID + '"';
-	      }
-	      r += '>';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLDTDNotation;
-
-	  })();
-
-	}).call(this);
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// Generated by CoffeeScript 1.6.3
-	(function() {
-	  var XMLProcessingInstruction, create;
-
-	  create = __webpack_require__(25);
-
-	  module.exports = XMLProcessingInstruction = (function() {
-	    function XMLProcessingInstruction(parent, target, value) {
-	      this.stringify = parent.stringify;
-	      if (target == null) {
-	        throw new Error("Missing instruction target");
-	      }
-	      this.target = this.stringify.insTarget(target);
-	      if (value) {
-	        this.value = this.stringify.insValue(value);
-	      }
-	    }
-
-	    XMLProcessingInstruction.prototype.clone = function() {
-	      return create(XMLProcessingInstruction.prototype, this);
-	    };
-
-	    XMLProcessingInstruction.prototype.toString = function(options, level) {
-	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
-	      pretty = (options != null ? options.pretty : void 0) || false;
-	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
-	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
-	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
-	      level || (level = 0);
-	      space = new Array(level + offset + 1).join(indent);
-	      r = '';
-	      if (pretty) {
-	        r += space;
-	      }
-	      r += '<?';
-	      r += this.target;
-	      if (this.value) {
-	        r += ' ' + this.value;
-	      }
-	      r += '?>';
-	      if (pretty) {
-	        r += newline;
-	      }
-	      return r;
-	    };
-
-	    return XMLProcessingInstruction;
-
-	  })();
-
-	}).call(this);
-
-
-/***/ },
-/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Generated by CoffeeScript 1.6.3
@@ -6769,11 +6453,11 @@ module.exports =
 	  var XMLCData, XMLComment, XMLDeclaration, XMLDocType, XMLElement, XMLNode, XMLRaw, XMLText, isArray, isEmpty, isFunction, isObject,
 	    __hasProp = {}.hasOwnProperty;
 
-	  isObject = __webpack_require__(26);
+	  isObject = __webpack_require__(28);
 
-	  isArray = __webpack_require__(35);
+	  isArray = __webpack_require__(37);
 
-	  isFunction = __webpack_require__(36);
+	  isFunction = __webpack_require__(38);
 
 	  isEmpty = __webpack_require__(53);
 
@@ -6798,8 +6482,8 @@ module.exports =
 	      this.stringify = this.parent.stringify;
 	      if (XMLElement === null) {
 	        XMLElement = __webpack_require__(22);
-	        XMLCData = __webpack_require__(27);
-	        XMLComment = __webpack_require__(28);
+	        XMLCData = __webpack_require__(30);
+	        XMLComment = __webpack_require__(31);
 	        XMLDeclaration = __webpack_require__(20);
 	        XMLDocType = __webpack_require__(21);
 	        XMLRaw = __webpack_require__(54);
@@ -7101,12 +6785,475 @@ module.exports =
 
 
 /***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLCData, XMLNode, create,
+	    __hasProp = {}.hasOwnProperty,
+	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+	  create = __webpack_require__(27);
+
+	  XMLNode = __webpack_require__(29);
+
+	  module.exports = XMLCData = (function(_super) {
+	    __extends(XMLCData, _super);
+
+	    function XMLCData(parent, text) {
+	      XMLCData.__super__.constructor.call(this, parent);
+	      if (text == null) {
+	        throw new Error("Missing CDATA text");
+	      }
+	      this.text = this.stringify.cdata(text);
+	    }
+
+	    XMLCData.prototype.clone = function() {
+	      return create(XMLCData.prototype, this);
+	    };
+
+	    XMLCData.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<![CDATA[' + this.text + ']]>';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLCData;
+
+	  })(XMLNode);
+
+	}).call(this);
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLComment, XMLNode, create,
+	    __hasProp = {}.hasOwnProperty,
+	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+	  create = __webpack_require__(27);
+
+	  XMLNode = __webpack_require__(29);
+
+	  module.exports = XMLComment = (function(_super) {
+	    __extends(XMLComment, _super);
+
+	    function XMLComment(parent, text) {
+	      XMLComment.__super__.constructor.call(this, parent);
+	      if (text == null) {
+	        throw new Error("Missing comment text");
+	      }
+	      this.text = this.stringify.comment(text);
+	    }
+
+	    XMLComment.prototype.clone = function() {
+	      return create(XMLComment.prototype, this);
+	    };
+
+	    XMLComment.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<!-- ' + this.text + ' -->';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLComment;
+
+	  })(XMLNode);
+
+	}).call(this);
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLDTDAttList, create;
+
+	  create = __webpack_require__(27);
+
+	  module.exports = XMLDTDAttList = (function() {
+	    function XMLDTDAttList(parent, elementName, attributeName, attributeType, defaultValueType, defaultValue) {
+	      this.stringify = parent.stringify;
+	      if (elementName == null) {
+	        throw new Error("Missing DTD element name");
+	      }
+	      if (attributeName == null) {
+	        throw new Error("Missing DTD attribute name");
+	      }
+	      if (!attributeType) {
+	        throw new Error("Missing DTD attribute type");
+	      }
+	      if (!defaultValueType) {
+	        throw new Error("Missing DTD attribute default");
+	      }
+	      if (defaultValueType.indexOf('#') !== 0) {
+	        defaultValueType = '#' + defaultValueType;
+	      }
+	      if (!defaultValueType.match(/^(#REQUIRED|#IMPLIED|#FIXED|#DEFAULT)$/)) {
+	        throw new Error("Invalid default value type; expected: #REQUIRED, #IMPLIED, #FIXED or #DEFAULT");
+	      }
+	      if (defaultValue && !defaultValueType.match(/^(#FIXED|#DEFAULT)$/)) {
+	        throw new Error("Default value only applies to #FIXED or #DEFAULT");
+	      }
+	      this.elementName = this.stringify.eleName(elementName);
+	      this.attributeName = this.stringify.attName(attributeName);
+	      this.attributeType = this.stringify.dtdAttType(attributeType);
+	      this.defaultValue = this.stringify.dtdAttDefault(defaultValue);
+	      this.defaultValueType = defaultValueType;
+	    }
+
+	    XMLDTDAttList.prototype.clone = function() {
+	      return create(XMLDTDAttList.prototype, this);
+	    };
+
+	    XMLDTDAttList.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<!ATTLIST ' + this.elementName + ' ' + this.attributeName + ' ' + this.attributeType;
+	      if (this.defaultValueType !== '#DEFAULT') {
+	        r += ' ' + this.defaultValueType;
+	      }
+	      if (this.defaultValue) {
+	        r += ' "' + this.defaultValue + '"';
+	      }
+	      r += '>';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLDTDAttList;
+
+	  })();
+
+	}).call(this);
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLDTDEntity, create, isObject;
+
+	  create = __webpack_require__(27);
+
+	  isObject = __webpack_require__(28);
+
+	  module.exports = XMLDTDEntity = (function() {
+	    function XMLDTDEntity(parent, pe, name, value) {
+	      this.stringify = parent.stringify;
+	      if (name == null) {
+	        throw new Error("Missing entity name");
+	      }
+	      if (value == null) {
+	        throw new Error("Missing entity value");
+	      }
+	      this.pe = !!pe;
+	      this.name = this.stringify.eleName(name);
+	      if (!isObject(value)) {
+	        this.value = this.stringify.dtdEntityValue(value);
+	      } else {
+	        if (!value.pubID && !value.sysID) {
+	          throw new Error("Public and/or system identifiers are required for an external entity");
+	        }
+	        if (value.pubID && !value.sysID) {
+	          throw new Error("System identifier is required for a public external entity");
+	        }
+	        if (value.pubID != null) {
+	          this.pubID = this.stringify.dtdPubID(value.pubID);
+	        }
+	        if (value.sysID != null) {
+	          this.sysID = this.stringify.dtdSysID(value.sysID);
+	        }
+	        if (value.nData != null) {
+	          this.nData = this.stringify.dtdNData(value.nData);
+	        }
+	        if (this.pe && this.nData) {
+	          throw new Error("Notation declaration is not allowed in a parameter entity");
+	        }
+	      }
+	    }
+
+	    XMLDTDEntity.prototype.clone = function() {
+	      return create(XMLDTDEntity.prototype, this);
+	    };
+
+	    XMLDTDEntity.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<!ENTITY';
+	      if (this.pe) {
+	        r += ' %';
+	      }
+	      r += ' ' + this.name;
+	      if (this.value) {
+	        r += ' "' + this.value + '"';
+	      } else {
+	        if (this.pubID && this.sysID) {
+	          r += ' PUBLIC "' + this.pubID + '" "' + this.sysID + '"';
+	        } else if (this.sysID) {
+	          r += ' SYSTEM "' + this.sysID + '"';
+	        }
+	        if (this.nData) {
+	          r += ' NDATA ' + this.nData;
+	        }
+	      }
+	      r += '>';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLDTDEntity;
+
+	  })();
+
+	}).call(this);
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLDTDElement, create, isArray;
+
+	  create = __webpack_require__(27);
+
+	  isArray = __webpack_require__(37);
+
+	  module.exports = XMLDTDElement = (function() {
+	    function XMLDTDElement(parent, name, value) {
+	      this.stringify = parent.stringify;
+	      if (name == null) {
+	        throw new Error("Missing DTD element name");
+	      }
+	      if (!value) {
+	        value = '(#PCDATA)';
+	      }
+	      if (isArray(value)) {
+	        value = '(' + value.join(',') + ')';
+	      }
+	      this.name = this.stringify.eleName(name);
+	      this.value = this.stringify.dtdElementValue(value);
+	    }
+
+	    XMLDTDElement.prototype.clone = function() {
+	      return create(XMLDTDElement.prototype, this);
+	    };
+
+	    XMLDTDElement.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<!ELEMENT ' + this.name + ' ' + this.value + '>';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLDTDElement;
+
+	  })();
+
+	}).call(this);
+
+
+/***/ },
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(56),
-	    isNative = __webpack_require__(57),
-	    isObjectLike = __webpack_require__(58);
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLDTDNotation, create;
+
+	  create = __webpack_require__(27);
+
+	  module.exports = XMLDTDNotation = (function() {
+	    function XMLDTDNotation(parent, name, value) {
+	      this.stringify = parent.stringify;
+	      if (name == null) {
+	        throw new Error("Missing notation name");
+	      }
+	      if (!value.pubID && !value.sysID) {
+	        throw new Error("Public or system identifiers are required for an external entity");
+	      }
+	      this.name = this.stringify.eleName(name);
+	      if (value.pubID != null) {
+	        this.pubID = this.stringify.dtdPubID(value.pubID);
+	      }
+	      if (value.sysID != null) {
+	        this.sysID = this.stringify.dtdSysID(value.sysID);
+	      }
+	    }
+
+	    XMLDTDNotation.prototype.clone = function() {
+	      return create(XMLDTDNotation.prototype, this);
+	    };
+
+	    XMLDTDNotation.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<!NOTATION ' + this.name;
+	      if (this.pubID && this.sysID) {
+	        r += ' PUBLIC "' + this.pubID + '" "' + this.sysID + '"';
+	      } else if (this.pubID) {
+	        r += ' PUBLIC "' + this.pubID + '"';
+	      } else if (this.sysID) {
+	        r += ' SYSTEM "' + this.sysID + '"';
+	      }
+	      r += '>';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLDTDNotation;
+
+	  })();
+
+	}).call(this);
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// Generated by CoffeeScript 1.6.3
+	(function() {
+	  var XMLProcessingInstruction, create;
+
+	  create = __webpack_require__(27);
+
+	  module.exports = XMLProcessingInstruction = (function() {
+	    function XMLProcessingInstruction(parent, target, value) {
+	      this.stringify = parent.stringify;
+	      if (target == null) {
+	        throw new Error("Missing instruction target");
+	      }
+	      this.target = this.stringify.insTarget(target);
+	      if (value) {
+	        this.value = this.stringify.insValue(value);
+	      }
+	    }
+
+	    XMLProcessingInstruction.prototype.clone = function() {
+	      return create(XMLProcessingInstruction.prototype, this);
+	    };
+
+	    XMLProcessingInstruction.prototype.toString = function(options, level) {
+	      var indent, newline, offset, pretty, r, space, _ref, _ref1, _ref2;
+	      pretty = (options != null ? options.pretty : void 0) || false;
+	      indent = (_ref = options != null ? options.indent : void 0) != null ? _ref : '  ';
+	      offset = (_ref1 = options != null ? options.offset : void 0) != null ? _ref1 : 0;
+	      newline = (_ref2 = options != null ? options.newline : void 0) != null ? _ref2 : '\n';
+	      level || (level = 0);
+	      space = new Array(level + offset + 1).join(indent);
+	      r = '';
+	      if (pretty) {
+	        r += space;
+	      }
+	      r += '<?';
+	      r += this.target;
+	      if (this.value) {
+	        r += ' ' + this.value;
+	      }
+	      r += '?>';
+	      if (pretty) {
+	        r += newline;
+	      }
+	      return r;
+	    };
+
+	    return XMLProcessingInstruction;
+
+	  })();
+
+	}).call(this);
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isLength = __webpack_require__(60),
+	    isNative = __webpack_require__(56),
+	    isObjectLike = __webpack_require__(61);
 
 	/** `Object#toString` result references. */
 	var arrayTag = '[object Array]';
@@ -7148,10 +7295,10 @@ module.exports =
 
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var isNative = __webpack_require__(57);
+	/* WEBPACK VAR INJECTION */(function(global) {var isNative = __webpack_require__(56);
 
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]';
@@ -7205,13 +7352,13 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayEvery = __webpack_require__(59),
-	    baseCallback = __webpack_require__(60),
-	    baseEvery = __webpack_require__(61),
-	    isArray = __webpack_require__(35);
+	var arrayEvery = __webpack_require__(57),
+	    baseCallback = __webpack_require__(58),
+	    baseEvery = __webpack_require__(59),
+	    isArray = __webpack_require__(37);
 
 	/**
 	 * Checks if `predicate` returns truthy for **all** elements of `collection`.
@@ -7266,14 +7413,14 @@ module.exports =
 
 
 /***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Generated by CoffeeScript 1.6.3
 	(function() {
 	  var XMLAttribute, create;
 
-	  create = __webpack_require__(25);
+	  create = __webpack_require__(27);
 
 	  module.exports = XMLAttribute = (function() {
 	    function XMLAttribute(parent, name, value) {
@@ -7301,135 +7448,6 @@ module.exports =
 	  })();
 
 	}).call(this);
-
-
-/***/ },
-/* 39 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	/**
-	 * isArray
-	 */
-
-	var isArray = Array.isArray;
-
-	/**
-	 * toString
-	 */
-
-	var str = Object.prototype.toString;
-
-	/**
-	 * Whether or not the given `val`
-	 * is an array.
-	 *
-	 * example:
-	 *
-	 *        isArray([]);
-	 *        // > true
-	 *        isArray(arguments);
-	 *        // > false
-	 *        isArray('');
-	 *        // > false
-	 *
-	 * @param {mixed} val
-	 * @return {bool}
-	 */
-
-	module.exports = isArray || function (val) {
-	  return !! val && '[object Array]' == str.call(val);
-	};
-
-
-/***/ },
-/* 40 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports.read = function(buffer, offset, isLE, mLen, nBytes) {
-	  var e, m,
-	      eLen = nBytes * 8 - mLen - 1,
-	      eMax = (1 << eLen) - 1,
-	      eBias = eMax >> 1,
-	      nBits = -7,
-	      i = isLE ? (nBytes - 1) : 0,
-	      d = isLE ? -1 : 1,
-	      s = buffer[offset + i];
-
-	  i += d;
-
-	  e = s & ((1 << (-nBits)) - 1);
-	  s >>= (-nBits);
-	  nBits += eLen;
-	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8);
-
-	  m = e & ((1 << (-nBits)) - 1);
-	  e >>= (-nBits);
-	  nBits += mLen;
-	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8);
-
-	  if (e === 0) {
-	    e = 1 - eBias;
-	  } else if (e === eMax) {
-	    return m ? NaN : ((s ? -1 : 1) * Infinity);
-	  } else {
-	    m = m + Math.pow(2, mLen);
-	    e = e - eBias;
-	  }
-	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-	};
-
-	exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
-	  var e, m, c,
-	      eLen = nBytes * 8 - mLen - 1,
-	      eMax = (1 << eLen) - 1,
-	      eBias = eMax >> 1,
-	      rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0),
-	      i = isLE ? 0 : (nBytes - 1),
-	      d = isLE ? 1 : -1,
-	      s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
-
-	  value = Math.abs(value);
-
-	  if (isNaN(value) || value === Infinity) {
-	    m = isNaN(value) ? 1 : 0;
-	    e = eMax;
-	  } else {
-	    e = Math.floor(Math.log(value) / Math.LN2);
-	    if (value * (c = Math.pow(2, -e)) < 1) {
-	      e--;
-	      c *= 2;
-	    }
-	    if (e + eBias >= 1) {
-	      value += rt / c;
-	    } else {
-	      value += rt * Math.pow(2, 1 - eBias);
-	    }
-	    if (value * c >= 2) {
-	      e++;
-	      c /= 2;
-	    }
-
-	    if (e + eBias >= eMax) {
-	      m = 0;
-	      e = eMax;
-	    } else if (e + eBias >= 1) {
-	      m = (value * c - 1) * Math.pow(2, mLen);
-	      e = e + eBias;
-	    } else {
-	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-	      e = 0;
-	    }
-	  }
-
-	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8);
-
-	  e = (e << mLen) | m;
-	  eLen += mLen;
-	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8);
-
-	  buffer[offset + i - d] |= s * 128;
-	};
 
 
 /***/ },
@@ -7663,10 +7681,10 @@ module.exports =
 /* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(56),
-	    isNative = __webpack_require__(57),
-	    isObject = __webpack_require__(26),
-	    shimKeys = __webpack_require__(68);
+	var isLength = __webpack_require__(60),
+	    isNative = __webpack_require__(56),
+	    isObject = __webpack_require__(28),
+	    shimKeys = __webpack_require__(69);
 
 	/* Native method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
@@ -7717,7 +7735,7 @@ module.exports =
 /* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(69);
+	var identity = __webpack_require__(68);
 
 	/**
 	 * A specialized version of `baseCallback` which only supports `this` binding
@@ -7763,8 +7781,8 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	var isIndex = __webpack_require__(70),
-	    isLength = __webpack_require__(56),
-	    isObject = __webpack_require__(26);
+	    isLength = __webpack_require__(60),
+	    isObject = __webpack_require__(28);
 
 	/**
 	 * Checks if the provided arguments are from an iteratee call.
@@ -7796,7 +7814,7 @@ module.exports =
 /* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var isObject = __webpack_require__(26);
+	/* WEBPACK VAR INJECTION */(function(global) {var isObject = __webpack_require__(28);
 
 	/**
 	 * The base implementation of `_.create` without support for assigning
@@ -7827,10 +7845,10 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArguments = __webpack_require__(71),
-	    isArray = __webpack_require__(35),
-	    isFunction = __webpack_require__(36),
-	    isLength = __webpack_require__(56),
-	    isObjectLike = __webpack_require__(58),
+	    isArray = __webpack_require__(37),
+	    isFunction = __webpack_require__(38),
+	    isLength = __webpack_require__(60),
+	    isObjectLike = __webpack_require__(61),
 	    isString = __webpack_require__(72),
 	    keys = __webpack_require__(49);
 
@@ -7886,9 +7904,9 @@ module.exports =
 	    __hasProp = {}.hasOwnProperty,
 	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-	  create = __webpack_require__(25);
+	  create = __webpack_require__(27);
 
-	  XMLNode = __webpack_require__(34);
+	  XMLNode = __webpack_require__(29);
 
 	  module.exports = XMLRaw = (function(_super) {
 	    __extends(XMLRaw, _super);
@@ -7941,9 +7959,9 @@ module.exports =
 	    __hasProp = {}.hasOwnProperty,
 	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-	  create = __webpack_require__(25);
+	  create = __webpack_require__(27);
 
-	  XMLNode = __webpack_require__(34);
+	  XMLNode = __webpack_require__(29);
 
 	  module.exports = XMLText = (function(_super) {
 	    __extends(XMLText, _super);
@@ -7991,33 +8009,8 @@ module.exports =
 /* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * Used as the maximum length of an array-like value.
-	 * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
-	 * for more details.
-	 */
-	var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
-
-	/**
-	 * Checks if `value` is a valid array-like length.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-	 */
-	function isLength(value) {
-	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-	}
-
-	module.exports = isLength;
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var escapeRegExp = __webpack_require__(73),
-	    isObjectLike = __webpack_require__(58);
+	    isObjectLike = __webpack_require__(61);
 
 	/** `Object#toString` result references. */
 	var funcTag = '[object Function]';
@@ -8074,25 +8067,7 @@ module.exports =
 
 
 /***/ },
-/* 58 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Checks if `value` is object-like.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-	 */
-	function isObjectLike(value) {
-	  return (value && typeof value == 'object') || false;
-	}
-
-	module.exports = isObjectLike;
-
-
-/***/ },
-/* 59 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -8121,13 +8096,13 @@ module.exports =
 
 
 /***/ },
-/* 60 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseMatches = __webpack_require__(74),
 	    baseProperty = __webpack_require__(75),
 	    bindCallback = __webpack_require__(50),
-	    identity = __webpack_require__(69),
+	    identity = __webpack_require__(68),
 	    isBindable = __webpack_require__(76);
 
 	/**
@@ -8160,7 +8135,7 @@ module.exports =
 
 
 /***/ },
-/* 61 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseEach = __webpack_require__(77);
@@ -8185,6 +8160,49 @@ module.exports =
 	}
 
 	module.exports = baseEvery;
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Used as the maximum length of an array-like value.
+	 * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength)
+	 * for more details.
+	 */
+	var MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+
+	/**
+	 * Checks if `value` is a valid array-like length.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+	 */
+	function isLength(value) {
+	  return typeof value == 'number' && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+	}
+
+	module.exports = isLength;
+
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Checks if `value` is object-like.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+	 */
+	function isObjectLike(value) {
+	  return (value && typeof value == 'object') || false;
+	}
+
+	module.exports = isObjectLike;
 
 
 /***/ },
@@ -8236,8 +8254,8 @@ module.exports =
 	var Stream = __webpack_require__(15);
 
 	/*<replacement>*/
-	var util = __webpack_require__(82);
-	util.inherits = __webpack_require__(81);
+	var util = __webpack_require__(79);
+	util.inherits = __webpack_require__(80);
 	/*</replacement>*/
 
 	var StringDecoder;
@@ -9184,8 +9202,8 @@ module.exports =
 
 
 	/*<replacement>*/
-	var util = __webpack_require__(82);
-	util.inherits = __webpack_require__(81);
+	var util = __webpack_require__(79);
+	util.inherits = __webpack_require__(80);
 	/*</replacement>*/
 
 	var Stream = __webpack_require__(15);
@@ -9671,8 +9689,8 @@ module.exports =
 
 
 	/*<replacement>*/
-	var util = __webpack_require__(82);
-	util.inherits = __webpack_require__(81);
+	var util = __webpack_require__(79);
+	util.inherits = __webpack_require__(80);
 	/*</replacement>*/
 
 	var Readable = __webpack_require__(62);
@@ -9798,8 +9816,8 @@ module.exports =
 	var Duplex = __webpack_require__(64);
 
 	/*<replacement>*/
-	var util = __webpack_require__(82);
-	util.inherits = __webpack_require__(81);
+	var util = __webpack_require__(79);
+	util.inherits = __webpack_require__(80);
 	/*</replacement>*/
 
 	util.inherits(Transform, Duplex);
@@ -9974,8 +9992,8 @@ module.exports =
 	var Transform = __webpack_require__(65);
 
 	/*<replacement>*/
-	var util = __webpack_require__(82);
-	util.inherits = __webpack_require__(81);
+	var util = __webpack_require__(79);
+	util.inherits = __webpack_require__(80);
 	/*</replacement>*/
 
 	util.inherits(PassThrough, Transform);
@@ -10002,12 +10020,37 @@ module.exports =
 /* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * This method returns the first argument provided to it.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Utility
+	 * @param {*} value Any value.
+	 * @returns {*} Returns `value`.
+	 * @example
+	 *
+	 * var object = { 'user': 'fred' };
+	 * _.identity(object) === object;
+	 * // => true
+	 */
+	function identity(value) {
+	  return value;
+	}
+
+	module.exports = identity;
+
+
+/***/ },
+/* 69 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var isArguments = __webpack_require__(71),
-	    isArray = __webpack_require__(35),
+	    isArray = __webpack_require__(37),
 	    isIndex = __webpack_require__(70),
-	    isLength = __webpack_require__(56),
-	    keysIn = __webpack_require__(79),
-	    support = __webpack_require__(80);
+	    isLength = __webpack_require__(60),
+	    keysIn = __webpack_require__(81),
+	    support = __webpack_require__(82);
 
 	/** Used for native method references. */
 	var objectProto = Object.prototype;
@@ -10047,31 +10090,6 @@ module.exports =
 
 
 /***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * This method returns the first argument provided to it.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Utility
-	 * @param {*} value Any value.
-	 * @returns {*} Returns `value`.
-	 * @example
-	 *
-	 * var object = { 'user': 'fred' };
-	 * _.identity(object) === object;
-	 * // => true
-	 */
-	function identity(value) {
-	  return value;
-	}
-
-	module.exports = identity;
-
-
-/***/ },
 /* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -10103,8 +10121,8 @@ module.exports =
 /* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(56),
-	    isObjectLike = __webpack_require__(58);
+	var isLength = __webpack_require__(60),
+	    isObjectLike = __webpack_require__(61);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]';
@@ -10147,7 +10165,7 @@ module.exports =
 /* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObjectLike = __webpack_require__(58);
+	var isObjectLike = __webpack_require__(61);
 
 	/** `Object#toString` result references. */
 	var stringTag = '[object String]';
@@ -10305,8 +10323,8 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseSetData = __webpack_require__(87),
-	    isNative = __webpack_require__(57),
-	    support = __webpack_require__(80);
+	    isNative = __webpack_require__(56),
+	    support = __webpack_require__(82);
 
 	/** Used to detect named functions. */
 	var reFuncName = /^\s*function[ \n\r\t]+\w/;
@@ -10349,7 +10367,7 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseForOwn = __webpack_require__(88),
-	    isLength = __webpack_require__(56),
+	    isLength = __webpack_require__(60),
 	    toObject = __webpack_require__(89);
 
 	/**
@@ -10391,188 +10409,6 @@ module.exports =
 
 /***/ },
 /* 79 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var isArguments = __webpack_require__(71),
-	    isArray = __webpack_require__(35),
-	    isIndex = __webpack_require__(70),
-	    isLength = __webpack_require__(56),
-	    isObject = __webpack_require__(26),
-	    support = __webpack_require__(80);
-
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-
-	/**
-	 * Creates an array of the own and inherited enumerable property names of `object`.
-	 *
-	 * **Note:** Non-object values are coerced to objects.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to inspect.
-	 * @returns {Array} Returns the array of property names.
-	 * @example
-	 *
-	 * function Foo() {
-	 *   this.a = 1;
-	 *   this.b = 2;
-	 * }
-	 *
-	 * Foo.prototype.c = 3;
-	 *
-	 * _.keysIn(new Foo);
-	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-	 */
-	function keysIn(object) {
-	  if (object == null) {
-	    return [];
-	  }
-	  if (!isObject(object)) {
-	    object = Object(object);
-	  }
-	  var length = object.length;
-	  length = (length && isLength(length) &&
-	    (isArray(object) || (support.nonEnumArgs && isArguments(object))) && length) || 0;
-
-	  var Ctor = object.constructor,
-	      index = -1,
-	      isProto = typeof Ctor == 'function' && Ctor.prototype == object,
-	      result = Array(length),
-	      skipIndexes = length > 0;
-
-	  while (++index < length) {
-	    result[index] = (index + '');
-	  }
-	  for (var key in object) {
-	    if (!(skipIndexes && isIndex(key, length)) &&
-	        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-	      result.push(key);
-	    }
-	  }
-	  return result;
-	}
-
-	module.exports = keysIn;
-
-
-/***/ },
-/* 80 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {var isNative = __webpack_require__(57);
-
-	/** Used to detect functions containing a `this` reference. */
-	var reThis = /\bthis\b/;
-
-	/** Used for native method references. */
-	var objectProto = Object.prototype;
-
-	/** Used to detect DOM support. */
-	var document = (document = global.window) && document.document;
-
-	/** Native method references. */
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-	/**
-	 * An object environment feature flags.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @type Object
-	 */
-	var support = {};
-
-	(function(x) {
-
-	  /**
-	   * Detect if functions can be decompiled by `Function#toString`
-	   * (all but Firefox OS certified apps, older Opera mobile browsers, and
-	   * the PlayStation 3; forced `false` for Windows 8 apps).
-	   *
-	   * @memberOf _.support
-	   * @type boolean
-	   */
-	  support.funcDecomp = !isNative(global.WinRTError) && reThis.test(function() { return this; });
-
-	  /**
-	   * Detect if `Function#name` is supported (all but IE).
-	   *
-	   * @memberOf _.support
-	   * @type boolean
-	   */
-	  support.funcNames = typeof Function.name == 'string';
-
-	  /**
-	   * Detect if the DOM is supported.
-	   *
-	   * @memberOf _.support
-	   * @type boolean
-	   */
-	  try {
-	    support.dom = document.createDocumentFragment().nodeType === 11;
-	  } catch(e) {
-	    support.dom = false;
-	  }
-
-	  /**
-	   * Detect if `arguments` object indexes are non-enumerable.
-	   *
-	   * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
-	   * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
-	   * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
-	   * checks for indexes that exceed their function's formal parameters with
-	   * associated values of `0`.
-	   *
-	   * @memberOf _.support
-	   * @type boolean
-	   */
-	  try {
-	    support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
-	  } catch(e) {
-	    support.nonEnumArgs = true;
-	  }
-	}(0, 0));
-
-	module.exports = support;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 81 */
-/***/ function(module, exports, __webpack_require__) {
-
-	if (typeof Object.create === 'function') {
-	  // implementation from standard node.js 'util' module
-	  module.exports = function inherits(ctor, superCtor) {
-	    ctor.super_ = superCtor
-	    ctor.prototype = Object.create(superCtor.prototype, {
-	      constructor: {
-	        value: ctor,
-	        enumerable: false,
-	        writable: true,
-	        configurable: true
-	      }
-	    });
-	  };
-	} else {
-	  // old school shim for old browsers
-	  module.exports = function inherits(ctor, superCtor) {
-	    ctor.super_ = superCtor
-	    var TempCtor = function () {}
-	    TempCtor.prototype = superCtor.prototype
-	    ctor.prototype = new TempCtor()
-	    ctor.prototype.constructor = ctor
-	  }
-	}
-
-
-/***/ },
-/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -10685,6 +10521,188 @@ module.exports =
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17).Buffer))
 
 /***/ },
+/* 80 */
+/***/ function(module, exports, __webpack_require__) {
+
+	if (typeof Object.create === 'function') {
+	  // implementation from standard node.js 'util' module
+	  module.exports = function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor
+	    ctor.prototype = Object.create(superCtor.prototype, {
+	      constructor: {
+	        value: ctor,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	  };
+	} else {
+	  // old school shim for old browsers
+	  module.exports = function inherits(ctor, superCtor) {
+	    ctor.super_ = superCtor
+	    var TempCtor = function () {}
+	    TempCtor.prototype = superCtor.prototype
+	    ctor.prototype = new TempCtor()
+	    ctor.prototype.constructor = ctor
+	  }
+	}
+
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArguments = __webpack_require__(71),
+	    isArray = __webpack_require__(37),
+	    isIndex = __webpack_require__(70),
+	    isLength = __webpack_require__(60),
+	    isObject = __webpack_require__(28),
+	    support = __webpack_require__(82);
+
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/**
+	 * Creates an array of the own and inherited enumerable property names of `object`.
+	 *
+	 * **Note:** Non-object values are coerced to objects.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to inspect.
+	 * @returns {Array} Returns the array of property names.
+	 * @example
+	 *
+	 * function Foo() {
+	 *   this.a = 1;
+	 *   this.b = 2;
+	 * }
+	 *
+	 * Foo.prototype.c = 3;
+	 *
+	 * _.keysIn(new Foo);
+	 * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+	 */
+	function keysIn(object) {
+	  if (object == null) {
+	    return [];
+	  }
+	  if (!isObject(object)) {
+	    object = Object(object);
+	  }
+	  var length = object.length;
+	  length = (length && isLength(length) &&
+	    (isArray(object) || (support.nonEnumArgs && isArguments(object))) && length) || 0;
+
+	  var Ctor = object.constructor,
+	      index = -1,
+	      isProto = typeof Ctor == 'function' && Ctor.prototype == object,
+	      result = Array(length),
+	      skipIndexes = length > 0;
+
+	  while (++index < length) {
+	    result[index] = (index + '');
+	  }
+	  for (var key in object) {
+	    if (!(skipIndexes && isIndex(key, length)) &&
+	        !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+	      result.push(key);
+	    }
+	  }
+	  return result;
+	}
+
+	module.exports = keysIn;
+
+
+/***/ },
+/* 82 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {var isNative = __webpack_require__(56);
+
+	/** Used to detect functions containing a `this` reference. */
+	var reThis = /\bthis\b/;
+
+	/** Used for native method references. */
+	var objectProto = Object.prototype;
+
+	/** Used to detect DOM support. */
+	var document = (document = global.window) && document.document;
+
+	/** Native method references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+	/**
+	 * An object environment feature flags.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @type Object
+	 */
+	var support = {};
+
+	(function(x) {
+
+	  /**
+	   * Detect if functions can be decompiled by `Function#toString`
+	   * (all but Firefox OS certified apps, older Opera mobile browsers, and
+	   * the PlayStation 3; forced `false` for Windows 8 apps).
+	   *
+	   * @memberOf _.support
+	   * @type boolean
+	   */
+	  support.funcDecomp = !isNative(global.WinRTError) && reThis.test(function() { return this; });
+
+	  /**
+	   * Detect if `Function#name` is supported (all but IE).
+	   *
+	   * @memberOf _.support
+	   * @type boolean
+	   */
+	  support.funcNames = typeof Function.name == 'string';
+
+	  /**
+	   * Detect if the DOM is supported.
+	   *
+	   * @memberOf _.support
+	   * @type boolean
+	   */
+	  try {
+	    support.dom = document.createDocumentFragment().nodeType === 11;
+	  } catch(e) {
+	    support.dom = false;
+	  }
+
+	  /**
+	   * Detect if `arguments` object indexes are non-enumerable.
+	   *
+	   * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
+	   * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
+	   * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
+	   * checks for indexes that exceed their function's formal parameters with
+	   * associated values of `0`.
+	   *
+	   * @memberOf _.support
+	   * @type boolean
+	   */
+	  try {
+	    support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
+	  } catch(e) {
+	    support.nonEnumArgs = true;
+	  }
+	}(0, 0));
+
+	module.exports = support;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
 /* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -10717,8 +10735,8 @@ module.exports =
 	    initCloneArray = __webpack_require__(92),
 	    initCloneByTag = __webpack_require__(93),
 	    initCloneObject = __webpack_require__(94),
-	    isArray = __webpack_require__(35),
-	    isObject = __webpack_require__(26),
+	    isArray = __webpack_require__(37),
+	    isObject = __webpack_require__(28),
 	    keys = __webpack_require__(49);
 
 	/** `Object#toString` result references. */
@@ -10910,7 +10928,7 @@ module.exports =
 /* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(26);
+	var isObject = __webpack_require__(28);
 
 	/**
 	 * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
@@ -10931,7 +10949,7 @@ module.exports =
 /* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var identity = __webpack_require__(69),
+	var identity = __webpack_require__(68),
 	    metaMap = __webpack_require__(96);
 
 	/**
@@ -10977,7 +10995,7 @@ module.exports =
 /* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(26);
+	var isObject = __webpack_require__(28);
 
 	/**
 	 * Converts `value` to an object if it is not one.
@@ -11215,7 +11233,7 @@ module.exports =
 /* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var isNative = __webpack_require__(57);
+	/* WEBPACK VAR INJECTION */(function(global) {var isNative = __webpack_require__(56);
 
 	/** Native method references. */
 	var WeakMap = isNative(WeakMap = global.WeakMap) && WeakMap;
@@ -11268,7 +11286,7 @@ module.exports =
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {var constant = __webpack_require__(100),
-	    isNative = __webpack_require__(57);
+	    isNative = __webpack_require__(56);
 
 	/** Native method references. */
 	var ArrayBuffer = isNative(ArrayBuffer = global.ArrayBuffer) && ArrayBuffer,
@@ -11332,7 +11350,7 @@ module.exports =
 	var equalArrays = __webpack_require__(101),
 	    equalByTag = __webpack_require__(102),
 	    equalObjects = __webpack_require__(103),
-	    isArray = __webpack_require__(35),
+	    isArray = __webpack_require__(37),
 	    isTypedArray = __webpack_require__(104);
 
 	/** `Object#toString` result references. */
@@ -11657,8 +11675,8 @@ module.exports =
 /* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isLength = __webpack_require__(56),
-	    isObjectLike = __webpack_require__(58);
+	var isLength = __webpack_require__(60),
+	    isObjectLike = __webpack_require__(61);
 
 	/** `Object#toString` result references. */
 	var argsTag = '[object Arguments]',
