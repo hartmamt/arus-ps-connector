@@ -10,22 +10,24 @@ var RemoteRequests = {
    *
    * @method getProfile
    * @static
+   * @params {Object} requestParams - an object containing the fields needed to
+   * build your remote request
+   * @example
+   * {
+   *   url: 'someUrl',
+   *   auth: ['username', 'password'],
+   *   acceptType: 'application/json',
+   *   send: dataToSend,
+   *   headers: objectContainingHeaders
+   * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getProfile': function() {
-    /**
-     * Set up your remote request parameters here using global variables
-     */
-    let requestParams = {
-      url: __PROFILE_URL__,
-      auth: [__USERNAME__, __PASSWORD__],
-      acceptType: 'application/xml'
-    };
+  'getProfile': function(requestParams) {
 
     return new Promise((resolve, reject) => {
       Request.get(requestParams)
         .then(res => {
-          
+
           let jRes;
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
