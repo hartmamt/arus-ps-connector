@@ -1,8 +1,8 @@
 {
   "name": "bl-ps-connector",
-  "version": "0.2.1-alpha",
+  "version": "0.2.5-dev",
   "description": "A PeopleSoft Connector for Black Lion",
-  "main": "PSConnector.js",
+  "main": "index.js",
   "scripts": {
     "build": "webpack --progress --colors --watch",
     "build-dev": "NODE_ENV=development&& webpack --progress --colors --watch",
