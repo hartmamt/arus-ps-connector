@@ -1,6 +1,6 @@
 {
   "name": "bl-ps-connector",
-  "version": "0.2.5-dev",
+  "version": "0.2.5-alpha",
   "description": "A PeopleSoft Connector for Black Lion",
   "main": "index.js",
   "scripts": {
