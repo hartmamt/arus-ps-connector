@@ -28,6 +28,11 @@ var conf = convict({
     doc: "The REST Endpoint to call.",
     default: "",
     env: "PROFILE_URL"
+  },
+  getPictureUrl: {
+    doc: "The REST Endpoint for a profile picture",
+    default: "",
+    env: "PICTURE_URL"
   }
 });
 

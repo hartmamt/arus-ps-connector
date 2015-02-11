@@ -16,7 +16,8 @@ var commonConfig = {
     new webpack.DefinePlugin({
       '__USERNAME__': JSON.stringify(config.get('username')),
       '__PASSWORD__': JSON.stringify(config.get('password')),
-      '__PROFILE_URL__': JSON.stringify(config.get('getProfileUrl'))
+      '__PROFILE_URL__': JSON.stringify(config.get('getProfileUrl')),
+      '__PICTURE_URL__': JSON.stringify(config.get('getPictureUrl'))
     })
   ]
 };

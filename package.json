@@ -1,6 +1,6 @@
 {
   "name": "bl-ps-connector",
-  "version": "0.2.5-alpha",
+  "version": "0.3.0-alpha",
   "description": "A PeopleSoft Connector for Black Lion",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/arus-project/bl-ps-connector",
   "dependencies": {
-    "convict": "^0.6.1",
     "superagent": "^0.21.0",
     "xml2js": "^0.4.4"
   },
@@ -33,6 +32,7 @@
     "6to5": "^3.3.10",
     "6to5-core": "^3.3.10",
     "6to5-loader": "^3.0.0",
+    "convict": "^0.6.1",
     "webpack": "^1.5.3",
     "webpack-dev-server": "^1.7.0"
   }
