@@ -3,6 +3,6 @@ A Connector designed for use with PeopleSoft
 
 ## API
 
-### `#getProfile(requestParams) : Promise of Profile`
+### `#getProfile(Object) : Promise of Profile`
 
-### `#getPicture(requestParams) : Promise of Picture`
+### `#getPicture(Object) : Promise of Picture`
