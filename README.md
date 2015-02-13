@@ -15,6 +15,8 @@ Takes an object defining the request parameters and returns a `Promise` of a `Pr
 
 Takes an object defining the request parameters and returns a `Promise` of a `Picture` object.
 
+### `PSConnector#getSchedule(requestParams : Object) : Promise of Schedule`
+
 An example `requestParams` object for the previous methods might look like:
 ```js
 var requestParams = {

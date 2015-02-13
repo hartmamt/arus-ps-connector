@@ -33,6 +33,11 @@ var conf = convict({
     doc: "The REST Endpoint for a profile picture",
     default: "",
     env: "PICTURE_URL"
+  },
+  getScheduleUrl: {
+    doc: "The REST Endpoint to call.",
+    default: "",
+    env: "SCHEDULE_URL"
   }
 });
 
