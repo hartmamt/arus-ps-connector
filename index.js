@@ -109,7 +109,7 @@ var RemoteRequests = {
     //       reject(err);
     //     });
     // });
-    let payloadMode = 3;
+    let payloadMode = 1;
     let params = {
       url: __SCHEDULE_URL__,
       auth: [__USERNAME__, __PASSWORD__],
@@ -122,12 +122,10 @@ var RemoteRequests = {
         .then(res => {
 
           let jRes;
-          console.log(res);
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
           });
 
-          // console.log("Serializer: ", Serialize.schedule());
           let schedule = Serialize.schedule(jRes, payloadMode);
           console.log(schedule);
 
