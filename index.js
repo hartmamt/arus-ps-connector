@@ -129,6 +129,7 @@ var RemoteRequests = {
 
           // console.log("Serializer: ", Serialize.schedule());
           let schedule = Serialize.schedule(jRes, payloadMode);
+          console.log(schedule);
 
           resolve(jRes);
         }).catch(err => {
