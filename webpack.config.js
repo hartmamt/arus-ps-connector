@@ -18,7 +18,10 @@ var commonConfig = {
       '__PASSWORD__': JSON.stringify(config.get('password')),
       '__PROFILE_URL__': JSON.stringify(config.get('getProfileUrl')),
       '__PICTURE_URL__': JSON.stringify(config.get('getPictureUrl')),
-      '__SCHEDULE_URL__': JSON.stringify(config.get('getScheduleUrl'))
+      '__SCHEDULE_URL__': JSON.stringify(config.get('getScheduleUrl')),
+      '__NOTIFICATIONS_URL__': JSON.stringify(config.get('getNotificationsUrl')),
+      '__EVENTS_URL__': JSON.stringify(config.get('getNotificationEventsUrl')),
+      '__MARK_AS_READ_URL__': JSON.stringify(config.get('markAsReadUrl'))
     })
   ]
 };
