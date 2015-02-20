@@ -104,12 +104,14 @@ var RemoteRequests = {
 
           let schedule = Serialize.schedule(jRes, payloadMode);
 
-          resolve(jRes);
+          resolve(schedule);
         }).catch(err => {
           reject(err);
         });
     });
   }
 }
+
+RemoteRequests.getSchedule();
 
 module.exports = RemoteRequests;
