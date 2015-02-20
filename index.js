@@ -133,7 +133,7 @@ var RemoteRequests = {
 
           let notifications = Serialize.notifications(jRes);
 
-          return notifications;
+          resolve(notifications);
         }).catch(err => {
           console.log(err);
           reject(err);
