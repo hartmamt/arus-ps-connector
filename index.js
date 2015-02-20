@@ -183,8 +183,4 @@ var RemoteRequests = {
   }
 }
 
-RemoteRequests.getNotifications();
-// RemoteRequests.getNotificationEvents();
-// RemoteRequests.markAsRead();
-
 module.exports = RemoteRequests;
