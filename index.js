@@ -93,32 +93,8 @@ var RemoteRequests = {
    */
   'getSchedule': function(requestParams, payloadMode = 1) {
 
-    // return new Promise((resolve, reject) => {
-    //   Request.post(requestParams)
-    //     .then(res => {
-    //
-    //       let jRes;
-    //       parseString(res.text, (err, parsedRes) => {
-    //         jRes = parsedRes;
-    //       });
-    //
-    //       let schedule = Serialize.schedule(jRes, payloadMode);
-    //
-    //       resolve(jRes);
-    //     }).catch(err => {
-    //       reject(err);
-    //     });
-    // });
-    let payloadMode = 1;
-    let params = {
-      url: __SCHEDULE_URL__,
-      auth: [__USERNAME__, __PASSWORD__],
-      send: `<SSR_GET_ENROLLMENT_REQ><EMPLID></EMPLID><ACAD_CAREER></ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${payloadMode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`,
-      acceptType: 'application/xml'
-    }
-
     return new Promise((resolve, reject) => {
-      Request.post(params)
+      Request.post(requestParams)
         .then(res => {
 
           let jRes;
@@ -127,7 +103,6 @@ var RemoteRequests = {
           });
 
           let schedule = Serialize.schedule(jRes, payloadMode);
-          console.log(schedule);
 
           resolve(jRes);
         }).catch(err => {
@@ -136,7 +111,5 @@ var RemoteRequests = {
     });
   }
 }
-
-RemoteRequests.getSchedule();
 
 module.exports = RemoteRequests;
