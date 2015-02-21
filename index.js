@@ -194,16 +194,16 @@ var RemoteRequests = {
   'getServiceIndicators': function(requestParams) {
 
     return new Promise((resolve, reject) => {
-      Request.post(requestParams)
+      Request.get(requestParams)
       .then(res => {
         let jRes;
         parseString(res.text, (err, parsedRes) => {
           jRes = parsedRes;
         });
 
-        let events = Serialize.events(jRes);
+        let serviceIndicators = Serialize.serviceIndicators(jRes);
 
-        resolve(events);
+        resolve(serviceIndicators);
       }).catch(err => {
         reject(err);
       });
