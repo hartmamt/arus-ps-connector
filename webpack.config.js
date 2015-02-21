@@ -21,7 +21,8 @@ var commonConfig = {
       '__SCHEDULE_URL__': JSON.stringify(config.get('getScheduleUrl')),
       '__NOTIFICATIONS_URL__': JSON.stringify(config.get('getNotificationsUrl')),
       '__EVENTS_URL__': JSON.stringify(config.get('getNotificationEventsUrl')),
-      '__MARK_AS_READ_URL__': JSON.stringify(config.get('markAsReadUrl'))
+      '__MARK_AS_READ_URL__': JSON.stringify(config.get('markAsReadUrl')),
+      '__SERVICE_INDICATORS_URL__': JSON.stringify(config.get('getServiceIndicatorsUrl'))
     })
   ]
 };

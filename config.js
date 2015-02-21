@@ -53,6 +53,11 @@ var conf = convict({
     doc: "The REST Endpoint to mark a notification as read",
     default: "",
     env: "MARK_AS_READ_URL"
+  },
+  getServiceIndicatorsUrl: {
+    doc: "The REST Endpoint to call for service indicators",
+    default: "",
+    env: "SERVICE_INDICATORS_URL"
   }
 });
 

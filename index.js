@@ -180,6 +180,34 @@ var RemoteRequests = {
   'markAsRead': function(requestParams) {
 
     Request.post(requestParams);
+  },
+
+  /**
+  * Retrieves Service Indicator info
+  *
+  * @method getServiceIndicators
+  * @static
+  * @params {Object} requestData - an object containing the fields needed to create the remote
+  * request
+  * @return {Promise} - returns a Promise of the serialized remote request response
+  */
+  'getServiceIndicators': function(requestParams) {
+
+    return new Promise((resolve, reject) => {
+      Request.post(requestParams)
+      .then(res => {
+        let jRes;
+        parseString(res.text, (err, parsedRes) => {
+          jRes = parsedRes;
+        });
+
+        let events = Serialize.events(jRes);
+
+        resolve(events);
+      }).catch(err => {
+        reject(err);
+      });
+    });
   }
 }
 
