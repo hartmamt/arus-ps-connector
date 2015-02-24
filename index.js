@@ -179,7 +179,14 @@ var RemoteRequests = {
    */
   'markAsRead': function(requestParams) {
 
-    Request.post(requestParams);
+    return new Promise((resolve, reject) => {
+      Request.post(requestParams)
+        .then(res => {
+          resolve(res);
+        }).catch(err => {
+          reject(err);
+        });
+    });
   }
 }
 
