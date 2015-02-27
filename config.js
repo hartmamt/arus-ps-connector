@@ -28,6 +28,31 @@ var conf = convict({
     doc: "The REST Endpoint to call.",
     default: "",
     env: "PROFILE_URL"
+  },
+  getPictureUrl: {
+    doc: "The REST Endpoint for a profile picture",
+    default: "",
+    env: "PICTURE_URL"
+  },
+  getScheduleUrl: {
+    doc: "The REST Endpoint to call.",
+    default: "",
+    env: "SCHEDULE_URL"
+  },
+  getNotificationsUrl: {
+    doc:"The REST Endpoint to call for notifications",
+    default: "",
+    env: "NOTIFICATIONS_URL"
+  },
+  getNotificationEventsUrl: {
+    doc: "The REST Endpoint to call for notification events",
+    default: "",
+    env: "EVENTS_URL"
+  },
+  markAsReadUrl: {
+    doc: "The REST Endpoint to mark a notification as read",
+    default: "",
+    env: "MARK_AS_READ_URL"
   }
 });
 
