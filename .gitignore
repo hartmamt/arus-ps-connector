@@ -29,6 +29,7 @@ src/lib/
 out/
 lib/components/
 .tmp
+jsonFiles/
 development.json
 production.json
 test.json

@@ -32,7 +32,7 @@ var RemoteRequests = {
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
           });
-
+          console.log(JSON.stringify(jRes));
           // Serialize the http response to a profile
           let profile = Serialize.profile(jRes);
 
@@ -70,7 +70,7 @@ var RemoteRequests = {
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
           });
-
+          // console.log(JSON.stringify(jRes));
           let picture = Serialize.picture(jRes);
 
           resolve(picture);
@@ -101,7 +101,7 @@ var RemoteRequests = {
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
           });
-
+          // console.log(JSON.stringify(jRes));
           let schedule = Serialize.schedule(jRes, payloadMode);
 
           resolve(schedule);
@@ -130,12 +130,11 @@ var RemoteRequests = {
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
           });
-
+          // console.log(JSON.stringify(jRes));
           let notifications = Serialize.notifications(jRes);
 
           resolve(notifications);
         }).catch(err => {
-          console.log(err);
           reject(err);
         });
     });
@@ -159,7 +158,7 @@ var RemoteRequests = {
           parseString(res.text, (err, parsedRes) => {
             jRes = parsedRes;
           });
-
+          // console.log(JSON.stringify(jRes));
           let events = Serialize.events(jRes);
 
           resolve(events);
@@ -189,5 +188,34 @@ var RemoteRequests = {
     });
   }
 }
+
+RemoteRequests.getProfile({
+        url: __PROFILE_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        acceptType: "application/xml"
+      });
+RemoteRequests.getPicture({
+        url: __PICTURE_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        acceptType: 'application/xml'
+      });
+RemoteRequests.getSchedule({
+      url: __SCHEDULE_URL__,
+      auth: [__USERNAME__, __PASSWORD__],
+      send: '<SSR_GET_ENROLLMENT_REQ><EMPLID></EMPLID><ACAD_CAREER></ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>1</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>',
+      acceptType: 'application/xml'
+    });
+RemoteRequests.getNotifications({
+      url: __NOTIFICATIONS_URL__,
+      auth: [__USERNAME__, __PASSWORD__],
+      send: '<SCC_GET_NOTIF_REQ><EMPLID></EMPLID></SCC_GET_NOTIF_REQ>',
+      acceptType: 'application/xml'
+    });
+RemoteRequests.getNotificationEvents({
+      url: __EVENTS_URL__,
+      auth: [__USERNAME__, __PASSWORD__],
+      send: `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>10000</NUM_PAST_DAYS><INCLUDE_EVENTS>Y</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`,
+      acceptType: 'application/xml'
+    });
 
 module.exports = RemoteRequests;
