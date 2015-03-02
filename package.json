@@ -34,7 +34,9 @@
     "6to5": "^3.3.10",
     "6to5-core": "^3.3.10",
     "6to5-loader": "^3.0.0",
+    "babel-eslint": "^1.0.12",
     "convict": "^0.6.1",
+    "eslint": "^0.15.1",
     "webpack": "^1.5.3",
     "webpack-dev-server": "^1.7.0"
   }
