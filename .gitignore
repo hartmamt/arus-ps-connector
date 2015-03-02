@@ -29,6 +29,7 @@ src/lib/
 out/
 lib/components/
 .tmp
+.eslintrc
 jsonFiles/
 development.json
 production.json
