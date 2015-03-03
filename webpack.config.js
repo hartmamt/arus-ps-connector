@@ -1,15 +1,15 @@
 var webpack = require('webpack');
-var config = require('./config');
+var config = require('./config.js');
 
 var env = config.get('env');
 
-console.log("Environment is " + env);
+console.log('Environment is ' + env);
 
 // These options are common to the configuration for each environment
 var commonConfig = {
   module: {
     loaders: [{
-      test: /\.(?:js|jsx)$/, loader: "6to5-loader", exclude: /node_modules/
+      test: /\.(?:js|jsx)$/, loader: '6to5-loader', exclude: /node_modules/
     }]
   },
   plugins: [

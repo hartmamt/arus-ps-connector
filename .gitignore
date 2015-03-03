@@ -24,12 +24,13 @@ $RECYCLE.BIN/
 
 # App specific
 *.log
+.eslintrc
+.eslintignore
 node_modules/
 src/lib/
 out/
 lib/components/
 .tmp
-.eslintrc
 jsonFiles/
 development.json
 production.json
@@ -39,4 +40,3 @@ test.json
 # Generated files
 build/
 test/build/
-.eslintrc
