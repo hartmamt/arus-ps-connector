@@ -22,7 +22,7 @@ var RemoteRequests = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getProfile': function(requestParams) {
+  'getProfile': function(requestParams, model) {
 
     return new Promise((resolve, reject) => {
       Request.get(requestParams)
@@ -30,11 +30,15 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
-          console.log(JSON.stringify(jRes));
+
           // Serialize the http response to a profile
-          let profile = Serialize.profile(jRes);
+          let profile = Serialize.profile(jRes, model);
 
           resolve(profile);
         }).catch(err => {
@@ -60,7 +64,7 @@ var RemoteRequests = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getPicture': function(requestParams) {
+  'getPicture': function(requestParams, model) {
 
     return new Promise((resolve, reject) => {
       Request.get(requestParams)
@@ -68,10 +72,14 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
-          // console.log(JSON.stringify(jRes));
-          let picture = Serialize.picture(jRes);
+
+          let picture = Serialize.picture(jRes, model);
 
           resolve(picture);
         }).catch(err => {
@@ -91,7 +99,7 @@ var RemoteRequests = {
    * or 3 and defaults to 1
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getSchedule': function(requestParams, payloadMode = 1) {
+  'getSchedule': function(requestParams, payloadMode = 1, model) {
 
     return new Promise((resolve, reject) => {
       Request.post(requestParams)
@@ -99,11 +107,15 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
-          // console.log(JSON.stringify(jRes));
-          let schedule = Serialize.schedule(jRes, payloadMode);
 
+          let schedule = Serialize.schedule(jRes, payloadMode, model);
+          
           resolve(schedule);
         }).catch(err => {
           reject(err);
@@ -120,7 +132,7 @@ var RemoteRequests = {
    * request
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getNotifications': function(requestParams) {
+  'getNotifications': function(requestParams, model) {
 
     return new Promise((resolve, reject) => {
       Request.post(requestParams)
@@ -128,10 +140,14 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
-          // console.log(JSON.stringify(jRes));
-          let notifications = Serialize.notifications(jRes);
+
+          let notifications = Serialize.notifications(jRes, model);
 
           resolve(notifications);
         }).catch(err => {
@@ -149,17 +165,21 @@ var RemoteRequests = {
    * request
    * @return {Promise} - returns a Promise of the serialized remote request response
    */
-  'getNotificationEvents': function(requestParams) {
+  'getNotificationEvents': function(requestParams, model) {
 
     return new Promise((resolve, reject) => {
       Request.post(requestParams)
         .then(res => {
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
-          // console.log(JSON.stringify(jRes));
-          let events = Serialize.events(jRes);
+
+          let events = Serialize.events(jRes, model);
 
           resolve(events);
         }).catch(err => {
@@ -187,35 +207,37 @@ var RemoteRequests = {
         });
     });
   }
-}
+};
 
-RemoteRequests.getProfile({
-        url: __PROFILE_URL__,
-        auth: [__USERNAME__, __PASSWORD__],
-        acceptType: "application/xml"
-      });
-RemoteRequests.getPicture({
-        url: __PICTURE_URL__,
-        auth: [__USERNAME__, __PASSWORD__],
-        acceptType: 'application/xml'
-      });
+/* eslint-disable */
+// RemoteRequests.getProfile({
+//         url: __PROFILE_URL__,
+//         auth: [__USERNAME__, __PASSWORD__],
+//         acceptType: "application/xml"
+//       });
+// RemoteRequests.getPicture({
+//         url: __PICTURE_URL__,
+//         auth: [__USERNAME__, __PASSWORD__],
+//         acceptType: 'application/xml'
+//       });
 RemoteRequests.getSchedule({
       url: __SCHEDULE_URL__,
       auth: [__USERNAME__, __PASSWORD__],
       send: '<SSR_GET_ENROLLMENT_REQ><EMPLID></EMPLID><ACAD_CAREER></ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>1</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>',
       acceptType: 'application/xml'
     });
-RemoteRequests.getNotifications({
-      url: __NOTIFICATIONS_URL__,
-      auth: [__USERNAME__, __PASSWORD__],
-      send: '<SCC_GET_NOTIF_REQ><EMPLID></EMPLID></SCC_GET_NOTIF_REQ>',
-      acceptType: 'application/xml'
-    });
-RemoteRequests.getNotificationEvents({
-      url: __EVENTS_URL__,
-      auth: [__USERNAME__, __PASSWORD__],
-      send: `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>10000</NUM_PAST_DAYS><INCLUDE_EVENTS>Y</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`,
-      acceptType: 'application/xml'
-    });
+// RemoteRequests.getNotifications({
+//       url: __NOTIFICATIONS_URL__,
+//       auth: [__USERNAME__, __PASSWORD__],
+//       send: '<SCC_GET_NOTIF_REQ><EMPLID></EMPLID></SCC_GET_NOTIF_REQ>',
+//       acceptType: 'application/xml'
+//     });
+// RemoteRequests.getNotificationEvents({
+//       url: __EVENTS_URL__,
+//       auth: [__USERNAME__, __PASSWORD__],
+//       send: `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>10000</NUM_PAST_DAYS><INCLUDE_EVENTS>Y</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`,
+//       acceptType: 'application/xml'
+//     });
+/* eslint-enable */
 
 module.exports = RemoteRequests;
