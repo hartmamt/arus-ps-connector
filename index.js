@@ -30,7 +30,11 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
 
           // Serialize the http response to a profile
@@ -68,7 +72,11 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
 
           let picture = Serialize.picture(jRes, model);
@@ -99,11 +107,15 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
 
           let schedule = Serialize.schedule(jRes, payloadMode, model);
-          console.log(`res: `, schedule);
+          
           resolve(schedule);
         }).catch(err => {
           reject(err);
@@ -128,7 +140,11 @@ var RemoteRequests = {
 
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
 
           let notifications = Serialize.notifications(jRes, model);
@@ -156,11 +172,15 @@ var RemoteRequests = {
         .then(res => {
           let jRes;
           parseString(res.text, (err, parsedRes) => {
-            jRes = parsedRes;
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              throw err;
+            }
           });
-          // console.log(JSON.stringify(jRes));
+
           let events = Serialize.events(jRes, model);
-          console.log(events);
+
           resolve(events);
         }).catch(err => {
           reject(err);
