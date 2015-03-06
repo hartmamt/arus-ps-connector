@@ -191,12 +191,12 @@ var RemoteRequests = {
   /**
    * Marks a notification as read
    *
-   * @method markAsRead
+   * @method changeReadStatus
    * @static
    * @params {Object} requestParams - an object containing the fields needed to create the remote
    * request
    */
-  'markAsRead': function(requestParams) {
+  'changeReadStatus': function(requestParams) {
 
     return new Promise((resolve, reject) => {
       Request.post(requestParams)

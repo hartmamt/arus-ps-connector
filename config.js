@@ -49,10 +49,10 @@ var conf = convict({
     default: '',
     env: 'EVENTS_URL'
   },
-  markAsReadUrl: {
+  changeReadStatusUrl: {
     doc: 'The REST Endpoint to mark a notification as read',
     default: '',
-    env: 'MARK_AS_READ_URL'
+    env: 'CHANGE_READ_STATUS_URL'
   }
 });
 
