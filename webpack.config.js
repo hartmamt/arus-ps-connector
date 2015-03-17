@@ -9,7 +9,7 @@ console.log('Environment is ' + env);
 var commonConfig = {
   module: {
     loaders: [{
-      test: /\.(?:js|jsx)$/, loader: '6to5-loader', exclude: /node_modules/
+      test: /\.js$/, loader: 'babel', exclude: /node_modules/
     }]
   },
   plugins: [
@@ -29,7 +29,7 @@ var commonConfig = {
 var devConfig = {
   name: 'development',
   entry: {
-    PSConnector: './index.js'
+    ArusPSConnector: './index.js'
   },
   output: {
     libraryTarget: 'var',
@@ -44,26 +44,25 @@ var devConfig = {
 var prodConfig = {
   name: 'production',
   entry: {
-    PSConnector: './index.js'
+    ArusPSConnector: './index.js'
   },
   output: {
     libraryTarget: 'commonjs2',
-    library: 'BlConnector',
-    path: '.',
+    library: '[name]',
+    path: __dirname + '/',
     filename: '[name].js'
   },
-  externals: commonConfig.externals,
   module: commonConfig.module,
   plugins: commonConfig.plugins
 };
 var testConfig = {
   name: 'test',
   entry: {
-    PSConnector: './index.js'
+    ArusPSConnector: './index.js'
   },
   output: {
     libraryTarget: 'commonjs2',
-    library: 'PSConnector',
+    library: 'ArusPSConnector',
     path: './test/build',
     filename: '[name].js'
   },
