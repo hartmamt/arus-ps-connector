@@ -2,7 +2,7 @@
   "name": "arus-ps-connector",
   "version": "0.7.0-alpha",
   "description": "A PeopleSoft Connector for Arus",
-  "main": "ArusPSConnector.js",
+  "main": "index.js",
   "scripts": {
     "build": "webpack --progress --colors --watch",
     "build-dev": "NODE_ENV=development&& webpack --progress --colors --watch",

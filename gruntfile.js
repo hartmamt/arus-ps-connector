@@ -3,6 +3,11 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     concat: {
+      options: {
+        process: function(src, filepath) {
+          return src.replace(/(?:\/\*.*\*\/|\/\/.*)$\r\n(^.*$)/gm, '$1');
+        }
+      },
       dist: {
         src: ['lib/**/*.js'],
         dest: 'build/compiled.js'

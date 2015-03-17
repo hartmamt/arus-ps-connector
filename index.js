@@ -14,7 +14,6 @@ var superagent = require("superagent");
  *
  * @class
  */
-/* eslint-disable */
 
 var Request = (function () {
   function Request() {
@@ -23,7 +22,6 @@ var Request = (function () {
 
   _createClass(Request, null, {
     get: {
-      /* eslint-enable */
 
       /**
        * Creates an http `GET` request.
@@ -169,7 +167,6 @@ var serializeKeys = function serializeKeys(keys, obj) {
       value = value[0];
     }
     if (typeof value === "object") {
-      // If value is indexed like an array
       if (value[0]) {
         var values = [];
         for (var _i = 0; value[_i] !== undefined; _i++) {
@@ -209,7 +206,6 @@ var _ = require("underscore");
  *
  * @class
  */
-/* eslint-disable */
 
 var Serializer = (function () {
   function Serializer() {
@@ -218,7 +214,6 @@ var Serializer = (function () {
 
   _createClass(Serializer, null, {
     profile: {
-      /* eslint-enable */
 
       /**
        * Serializes data into a `Profile` object
@@ -365,7 +360,6 @@ var RemoteRequests = {
           }
         });
 
-        // Serialize the http response to a profile
         var profile = serialize.profile(jRes, model);
 
         resolve(profile);
@@ -545,7 +539,6 @@ var Notification = (function () {
 
     _classCallCheck(this, Notification);
 
-    /* eslint-disable */
     var fields = (_temp = notificationData, this.id = _temp.id, this.tag = _temp.tag, this.type = _temp.type, this.importance = _temp.importance, this.dateTime = _temp.dateTime, this.subject = _temp.subject, this.message = _temp.message, _temp);
   }
 
@@ -582,7 +575,6 @@ var NtfEvent = (function () {
 
     _classCallCheck(this, NtfEvent);
 
-    /* eslint-disable */
     var fields = (_temp = eventData, this.id = _temp.id, this.status = _temp.status, this.startDate = _temp.startDate, this.message = _temp.message, _temp);
   }
 
@@ -623,7 +615,6 @@ var Picture = (function () {
 
     _classCallCheck(this, Picture);
 
-    /* eslint-disable */
     var fields = (_temp = pictureData, this.base64 = _temp.base64, _temp);
   }
 
@@ -662,7 +653,6 @@ var Profile = (function () {
 
     _classCallCheck(this, Profile);
 
-    /* eslint-disable */
     var fields = (_temp = profileData, this.name = _temp.name, this.acadCareer = _temp.acadCareer, _temp);
   }
 
@@ -697,7 +687,6 @@ var Schedule = (function () {
 
     _classCallCheck(this, Schedule);
 
-    /* eslint-disable */
     var fields = (_temp = scheduleData, this.terms = _temp.terms, _temp);
   }
 
@@ -726,7 +715,6 @@ var Term = (function () {
 
     _classCallCheck(this, Term);
 
-    /* eslint-disable */
     var fields = (_temp = termData, this.acadCareerDesc = _temp.acadCareerDesc, this.curGpa = _temp.curGpa, this.cumGpa = _temp.cumGpa, this.termName = _temp.termName, this.institution = _temp.institution, this.termBeginDate = _temp.termBeginDate, this.termEndDate = _temp.termEndDate, this.courses = _temp.courses, _temp);
   }
 
@@ -773,7 +761,6 @@ var Course = (function () {
 
     _classCallCheck(this, Course);
 
-    /* eslint-disable */
     var fields = (_temp = courseData, this.desc = _temp.desc, this.status = _temp.status, this.units = _temp.units, this.gradeDesc = _temp.gradeDesc, this.grade = _temp.grade, this.course = _temp.course, this.sessions = _temp.sessions, _temp);
   }
 
@@ -825,7 +812,6 @@ var Session = (function () {
 
     _classCallCheck(this, Session);
 
-    /* eslint-disable */
     var fields = (_temp = sessionData, this.classNumber = _temp.classNumber, this.classSection = _temp.classSection, this.component = _temp.component, this.daysTimes = _temp.daysTimes, this.room = _temp.room, this.instructor = _temp.instructor, this.startDate = _temp.startDate, this.endDate = _temp.endDate, _temp);
   }
 
@@ -896,19 +882,3 @@ var Session = (function () {
 
   return Session;
 })();
-
-/* eslint-enable */
-
-/* eslint-enable */
-
-/* eslint-enable */
-
-/* eslint-enable */
-
-/* eslint-enable */
-
-/* eslint-enable */
-
-/* eslint-enable */
-
-/* eslint-enable */
