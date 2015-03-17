@@ -1,4 +1,4 @@
-
+require('babel/polyfill');
 var Request = require('./lib/Request.js');
 var Serialize = require('./lib/Serializer.js');
 var parseString = require('xml2js').parseString;
