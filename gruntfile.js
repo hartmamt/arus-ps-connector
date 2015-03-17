@@ -6,7 +6,8 @@ module.exports = function(grunt) {
       options: {
         process: function(src, filepath) {
           return src.replace(/(?:\/\*.*\*\/|\/\/.*)$\r\n(^.*$)/gm, '$1');
-        }
+        },
+        footer: 'module.exports = <%= pkg.name %>;\n'
       },
       dist: {
         src: ['lib/**/*.js'],

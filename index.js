@@ -327,7 +327,7 @@ var Serializer = (function () {
 
 var parseString = require("xml2js").parseString;
 
-var RemoteRequests = {
+var ArusPSConnector = {
 
   /**
    * Retrieves Profile information.
@@ -882,3 +882,5 @@ var Session = (function () {
 
   return Session;
 })();
+
+module.exports = ArusPSConnector;
