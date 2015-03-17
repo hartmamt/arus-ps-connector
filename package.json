@@ -1,5 +1,5 @@
 {
-  "name": "ArusPSConnector",
+  "name": "arus-ps-connector",
   "version": "0.7.1-alpha",
   "description": "A PeopleSoft Connector for Arus",
   "main": "index.js",

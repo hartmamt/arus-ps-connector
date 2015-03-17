@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         process: function(src, filepath) {
           return src.replace(/(?:\/\*.*\*\/|\/\/.*)$\r\n(^.*$)/gm, '$1');
         },
-        footer: 'module.exports = <%= pkg.name %>;\n'
+        footer: 'module.exports = ArusPSConnector;\n'
       },
       dist: {
         src: ['lib/**/*.js'],
