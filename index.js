@@ -360,7 +360,7 @@ var ArusPSConnector = {
           }
         });
 
-        var profile = serialize.profile(jRes, model);
+        var profile = Serializer.profile(jRes, model);
 
         resolve(profile);
       })["catch"](function (err) {
@@ -400,7 +400,7 @@ var ArusPSConnector = {
           }
         });
 
-        var picture = serialize.picture(jRes, model);
+        var picture = Serializer.picture(jRes, model);
 
         resolve(picture);
       })["catch"](function (err) {
@@ -435,7 +435,7 @@ var ArusPSConnector = {
           }
         });
 
-        var schedule = serialize.schedule(jRes, payloadMode, model);
+        var schedule = Serializer.schedule(jRes, payloadMode, model);
 
         resolve(schedule);
       })["catch"](function (err) {
@@ -467,7 +467,7 @@ var ArusPSConnector = {
           }
         });
 
-        var notifications = serialize.notifications(jRes, model);
+        var notifications = Serializer.notifications(jRes, model);
 
         resolve(notifications);
       })["catch"](function (err) {
@@ -498,7 +498,7 @@ var ArusPSConnector = {
           }
         });
 
-        var events = serialize.events(jRes, model);
+        var events = Serializer.events(jRes, model);
 
         resolve(events);
       })["catch"](function (err) {
