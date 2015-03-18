@@ -1,6 +1,6 @@
 {
   "name": "arus-ps-connector",
-  "version": "0.6.2-alpha",
+  "version": "0.7.3-gulp",
   "description": "A PeopleSoft Connector for Arus",
   "main": "index.js",
   "scripts": {
@@ -39,7 +39,11 @@
     "babel-eslint": "^1.0.12",
     "babel-loader": "^4.2.0",
     "convict": "^0.6.1",
+    "del": "^1.1.1",
     "eslint": "^0.15.1",
+    "gulp": "^3.8.11",
+    "gulp-babel": "^4.0.0",
+    "gulp-concat": "^2.5.2",
     "webpack": "^1.5.3",
     "webpack-dev-server": "^1.7.0"
   }

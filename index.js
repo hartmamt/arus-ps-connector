@@ -1,7 +1,8 @@
-require('babel/polyfill');
-var Request = require('./lib/Request.js');
-var Serialize = require('./lib/Serializer.js');
-var parseString = require('xml2js').parseString;
+"use strict";
+
+var Request = require("./lib/Request.js");
+var Serializer = require("./lib/Serializer.js");
+var parseString = require("xml2js").parseString;
 
 var RemoteRequests = {
 
@@ -22,28 +23,27 @@ var RemoteRequests = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getProfile': function(requestParams, model) {
+  getProfile: function getProfile(requestParams, model) {
 
-    return new Promise((resolve, reject) => {
-      Request.get(requestParams)
-        .then(res => {
+    return new Promise(function (resolve, reject) {
+      Request.get(requestParams).then(function (res) {
 
-          let jRes;
-          parseString(res.text, (err, parsedRes) => {
-            if (!err) {
-              jRes = parsedRes;
-            } else {
-              throw err;
-            }
-          });
-
-          // Serialize the http response to a profile
-          let profile = Serialize.profile(jRes, model);
-
-          resolve(profile);
-        }).catch(err => {
-          reject(err);
+        var jRes = undefined;
+        parseString(res.text, function (err, parsedRes) {
+          if (!err) {
+            jRes = parsedRes;
+          } else {
+            throw err;
+          }
         });
+
+        // Serialize the http response to a profile
+        var profile = Serializer.profile(jRes, model);
+
+        resolve(profile);
+      })["catch"](function (err) {
+        reject(err);
+      });
     });
   },
 
@@ -64,27 +64,26 @@ var RemoteRequests = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getPicture': function(requestParams, model) {
+  getPicture: function getPicture(requestParams, model) {
 
-    return new Promise((resolve, reject) => {
-      Request.get(requestParams)
-        .then(res => {
+    return new Promise(function (resolve, reject) {
+      Request.get(requestParams).then(function (res) {
 
-          let jRes;
-          parseString(res.text, (err, parsedRes) => {
-            if (!err) {
-              jRes = parsedRes;
-            } else {
-              throw err;
-            }
-          });
-
-          let picture = Serialize.picture(jRes, model);
-
-          resolve(picture);
-        }).catch(err => {
-          reject(err);
+        var jRes = undefined;
+        parseString(res.text, function (err, parsedRes) {
+          if (!err) {
+            jRes = parsedRes;
+          } else {
+            throw err;
+          }
         });
+
+        var picture = Serializer.picture(jRes, model);
+
+        resolve(picture);
+      })["catch"](function (err) {
+        reject(err);
+      });
     });
   },
 
@@ -99,27 +98,27 @@ var RemoteRequests = {
    * or 3 and defaults to 1
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getSchedule': function(requestParams, payloadMode = 1, model) {
+  getSchedule: function getSchedule(requestParams, _x, model) {
+    var payloadMode = arguments[1] === undefined ? 1 : arguments[1];
 
-    return new Promise((resolve, reject) => {
-      Request.post(requestParams)
-        .then(res => {
+    return new Promise(function (resolve, reject) {
+      Request.post(requestParams).then(function (res) {
 
-          let jRes;
-          parseString(res.text, (err, parsedRes) => {
-            if (!err) {
-              jRes = parsedRes;
-            } else {
-              throw err;
-            }
-          });
-
-          let schedule = Serialize.schedule(jRes, payloadMode, model);
-
-          resolve(schedule);
-        }).catch(err => {
-          reject(err);
+        var jRes = undefined;
+        parseString(res.text, function (err, parsedRes) {
+          if (!err) {
+            jRes = parsedRes;
+          } else {
+            throw err;
+          }
         });
+
+        var schedule = Serializer.schedule(jRes, payloadMode, model);
+
+        resolve(schedule);
+      })["catch"](function (err) {
+        reject(err);
+      });
     });
   },
 
@@ -132,27 +131,26 @@ var RemoteRequests = {
    * request
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getNotifications': function(requestParams, model) {
+  getNotifications: function getNotifications(requestParams, model) {
 
-    return new Promise((resolve, reject) => {
-      Request.post(requestParams)
-        .then(res => {
+    return new Promise(function (resolve, reject) {
+      Request.post(requestParams).then(function (res) {
 
-          let jRes;
-          parseString(res.text, (err, parsedRes) => {
-            if (!err) {
-              jRes = parsedRes;
-            } else {
-              throw err;
-            }
-          });
-
-          let notifications = Serialize.notifications(jRes, model);
-
-          resolve(notifications);
-        }).catch(err => {
-          reject(err);
+        var jRes = undefined;
+        parseString(res.text, function (err, parsedRes) {
+          if (!err) {
+            jRes = parsedRes;
+          } else {
+            throw err;
+          }
         });
+
+        var notifications = Serializer.notifications(jRes, model);
+
+        resolve(notifications);
+      })["catch"](function (err) {
+        reject(err);
+      });
     });
   },
 
@@ -165,26 +163,25 @@ var RemoteRequests = {
    * request
    * @return {Promise} - returns a Promise of the serialized remote request response
    */
-  'getNotificationEvents': function(requestParams, model) {
+  getNotificationEvents: function getNotificationEvents(requestParams, model) {
 
-    return new Promise((resolve, reject) => {
-      Request.post(requestParams)
-        .then(res => {
-          let jRes;
-          parseString(res.text, (err, parsedRes) => {
-            if (!err) {
-              jRes = parsedRes;
-            } else {
-              throw err;
-            }
-          });
-
-          let events = Serialize.events(jRes, model);
-
-          resolve(events);
-        }).catch(err => {
-          reject(err);
+    return new Promise(function (resolve, reject) {
+      Request.post(requestParams).then(function (res) {
+        var jRes = undefined;
+        parseString(res.text, function (err, parsedRes) {
+          if (!err) {
+            jRes = parsedRes;
+          } else {
+            throw err;
+          }
         });
+
+        var events = Serializer.events(jRes, model);
+
+        resolve(events);
+      })["catch"](function (err) {
+        reject(err);
+      });
     });
   },
 
@@ -196,17 +193,800 @@ var RemoteRequests = {
    * @params {Object} requestParams - an object containing the fields needed to create the remote
    * request
    */
-  'changeReadStatus': function(requestParams) {
+  changeReadStatus: function changeReadStatus(requestParams) {
 
-    return new Promise((resolve, reject) => {
-      Request.post(requestParams)
-        .then(res => {
-          resolve(res);
-        }).catch(err => {
-          reject(err);
-        });
+    return new Promise(function (resolve, reject) {
+      Request.post(requestParams).then(function (res) {
+        resolve(res);
+      })["catch"](function (err) {
+        reject(err);
+      });
     });
   }
 };
 
 module.exports = RemoteRequests;
+"use strict";
+
+var _toConsumableArray = function (arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var superagent = require("superagent");
+
+/**
+ * Provides methods to make REST calls. It currently uses the the superagent
+ * request library but can be configured to use other libraries.
+ *
+ * @class
+ */
+/* eslint-disable */
+
+var Request = (function () {
+  function Request() {
+    _classCallCheck(this, Request);
+  }
+
+  _createClass(Request, null, {
+    get: {
+      /* eslint-enable */
+
+      /**
+       * Creates an http `GET` request.
+       *
+       * @method get
+       * @static
+       * @params {Object} params - the parameters that are used to construct the remote request
+       * @throws Throws an error if the endpoint url isn't passed in
+       * @return {Promise} - returns a Promise of a remote request response
+       */
+
+      value: function get(params) {
+        return new Promise(function (resolve, reject) {
+          if (!params.url) {
+            throw "Error: Endpoint Url not available";
+          }
+
+          var request = superagent.get(params.url);
+          if (params.auth) {
+            request.auth.apply(request, _toConsumableArray(params.auth));
+          }
+          if (params.acceptType) {
+            request.accept(params.acceptType);
+          }
+          if (params.headers) {
+            for (var header in params.headers) {
+              request.set(header, params.headers[header]);
+            }
+          }
+          request.end(function (err, res) {
+            if (res.ok) {
+              resolve(res);
+            } else {
+              reject(err);
+            }
+          });
+        });
+      }
+    },
+    post: {
+
+      /**
+       * Creates an http `POST` request.
+       *
+       * @method post
+       * @static
+       * @params {Object} params - the parameters that are used to construct the remote request
+       * @throws Throws an error if the endpoint url isn't passed in
+       * @return {Promise} - returns a Promise of a remote request response
+       */
+
+      value: function post(params) {
+        return new Promise(function (resolve, reject) {
+          if (!params.url) {
+            throw "Error: Endpoint Url not available";
+          }
+
+          var request = superagent.post(params.url);
+          if (params.auth) {
+            request.auth.apply(request, _toConsumableArray(params.auth));
+          }
+          if (params.acceptType) {
+            request.accept(params.acceptType);
+          }
+          if (params.headers) {
+            for (var header in params.headers) {
+              request.set(header, params.headers[header]);
+            }
+          }
+          if (params.send) {
+            request.send(params.send);
+          }
+          request.end(function (err, res) {
+            if (res.ok) {
+              resolve(res);
+            } else {
+              reject(err);
+            }
+          });
+        });
+      }
+    },
+    update: {
+
+      /**
+       *
+       * Creates an http `UPDATE` request. **Note:** Not implemented yet.
+       *
+       * @method update
+       * @static
+       * @params {Object} params - the parameters that are used to construct the remote request
+       * @return {Promise} - returns a Promise of a remote request response
+       */
+
+      value: function update(params) {
+        return new Promise(function (resolve, reject) {
+          reject("method `update` not defined yet");
+        });
+      }
+    },
+    "delete": {
+
+      /**
+       * Creates an http `DELETE` request. **Note:** Not implemented yet.
+       *
+       * @method delete
+       * @static
+       * @params {Object} params - the parameters that are used to construct the remote request
+       * @return {Promise} - returns a Promise of a remote request response
+       */
+
+      value: function _delete(params) {
+        return new Promise(function (resolve, reject) {
+          reject("method `delete` not defined yet");
+        });
+      }
+    }
+  });
+
+  return Request;
+})();
+
+module.exports = Request;
+"use strict";
+
+var _ = require("underscore");
+
+var serialize = function serialize(obj) {
+  var keys = _.keys(obj);
+  keys = _.reject(keys, function (key) {
+    return key === "$";
+  });
+
+  return serializeKeys(keys, obj);
+};
+
+var serializeKeys = function serializeKeys(keys, obj) {
+  var res = {};
+
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var fieldName = toCamelCase(key);
+    var value = obj[key];
+
+    if (_.isArray(value) && value.length === 1) {
+      value = value[0];
+    }
+    if (typeof value === "object") {
+      // If value is indexed like an array
+      if (value[0]) {
+        var values = [];
+        for (var _i = 0; value[_i] !== undefined; _i++) {
+          values.push(serialize(value[_i]));
+        }
+
+        value = values;
+      } else {
+        value = serialize(value);
+      }
+    }
+
+    res[fieldName] = value;
+  }
+
+  return res;
+};
+
+var toCamelCase = function toCamelCase(str) {
+  var words = str.toLowerCase().split("_");
+  var camelCase = "";
+
+  for (var i = 0; i < words.length; i++) {
+    if (i > 0) {
+      words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+    }
+    camelCase += words[i];
+  }
+
+  return camelCase;
+};
+
+module.exports = serialize;
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+// var { ProfileSerializer, PictureSerializer, ScheduleSerializer, NotificationSerializer } = require('./Serializers/Serializers.js');
+var _ = require("underscore");
+var serialize = require("./Serialize.js");
+
+/**
+ * These are the models that are used to serialize the data
+ */
+/* eslint-disable */
+
+var _require = require("./models/Models.js");
+
+var Profile = _require.Profile;
+var Picture = _require.Picture;
+var Schedule = _require.Schedule;
+var Notification = _require.Notification;
+var NtfEvent = _require.NtfEvent;
+
+/* eslint-enable */
+
+/**
+ * Handles the formatting of remote request responses responses.
+ *
+ * @class
+ */
+/* eslint-disable */
+
+var Serializer = (function () {
+  function Serializer() {
+    _classCallCheck(this, Serializer);
+  }
+
+  _createClass(Serializer, null, {
+    profile: {
+      /* eslint-enable */
+
+      /**
+       * Serializes data into a `Profile` object
+       *
+       * @method profile
+       * @static
+       * @param {object} profileData - the data that needs to be serialized into a `Profile`
+       * @param {function} model - a function that handles the mapping of the serialized data. It must
+       * have a `create` method. Defaults to `Profile`
+       * @return {model} - returns an instance of `model`
+       */
+
+      value: function profile(profileData) {
+        var model = arguments[1] === undefined ? Profile : arguments[1];
+
+        return model.create(serialize(profileData));
+      }
+    },
+    picture: {
+
+      /**
+       * Serializes data into a `Picture` object
+       *
+       * @method picture
+       * @static
+       * @param {object} pictureData - the data that needs to be serialized into a `Picture`
+       * @param {function} model - a function that handles the mapping of the serialized data. It must
+       * have a `create` method. Defaults to `Picture`
+       * @return {model} - returns an instance of `model`
+       */
+
+      value: function picture(pictureData) {
+        var model = arguments[1] === undefined ? Picture : arguments[1];
+
+        return model.create(serialize(pictureData));
+      }
+    },
+    schedule: {
+
+      /**
+       * Serializes data into a `Schedule` object
+       *
+       * @method schedule
+       * @static
+       * @param {object} scheduleData - the data that needs to be serialized into a `Schedule`
+       * @param {Num} payloadMode - specifies the format the payload will come back in; must be 1, 2,
+       * or 3 and defaults to 1
+       * @param {function} model - a function that handles the mapping of the serialized data. It must
+       * have a `create` method. Defaults to `Schedule`
+       * @return {model} - returns an instance of `model`
+       */
+
+      value: function schedule(scheduleData, payloadMode) {
+        var model = arguments[2] === undefined ? Schedule : arguments[2];
+
+        return model.create(serialize(scheduleData), payloadMode);
+      }
+    },
+    notifications: {
+
+      /**
+       * Serializes data into a `Notification` object
+       *
+       * @method notifications
+       * @static
+       * @param {object} notificationData
+       * @param {function} model - a function that handles the mapping of the serialized data. It must
+       * have a `create` method. Defaults to `Notification`
+       * @return {Array<model>} - returns an Array of `model` objects
+       */
+
+      value: function notifications(notificationsData) {
+        var model = arguments[1] === undefined ? Notification : arguments[1];
+
+        var notifications = [];
+
+        notifications = _.map(notificationsData.SCC_GET_NOTIF_RESP.NTK_ITEM, function (notification) {
+          return model.create(serialize(notification));
+        });
+
+        return notifications;
+      }
+    },
+    events: {
+
+      /**
+       * Serializes data into an `Event` object
+       *
+       * @param {object} eventsData
+       * @param {function} model - a function that handles the mapping of the serialized data. It must
+       * have a `create` method. Defaults to `NtfEvent`
+       * @return {Array<model>} - returns an Array of `model` objects
+       */
+
+      value: function events(eventsData) {
+        var model = arguments[1] === undefined ? NtfEvent : arguments[1];
+
+        var events = [];
+
+        events = _.map(eventsData.SCC_NTF_GET_EVENTS_RESP.SCC_NTF_EVENT, function (evt) {
+          return model.create(serialize(evt));
+        });
+
+        return events;
+      }
+    }
+  });
+
+  return Serializer;
+})();
+
+module.exports = Serializer;
+"use strict";
+
+module.exports = {
+  Profile: require("./Profile.js"),
+  Picture: require("./Picture.js"),
+  Schedule: require("./Schedule.js"),
+  Notification: require("./Notification.js"),
+  NtfEvent: require("./NtfEvent.js")
+};
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Serializes Notification data
+ *
+ * @class
+ */
+
+var Notification = (function () {
+  function Notification(notificationData) {
+    var _temp;
+
+    _classCallCheck(this, Notification);
+
+    /* eslint-disable */
+    var fields = (_temp = notificationData, this.id = _temp.id, this.tag = _temp.tag, this.type = _temp.type, this.importance = _temp.importance, this.dateTime = _temp.dateTime, this.subject = _temp.subject, this.message = _temp.message, _temp);
+  }
+
+  _createClass(Notification, null, {
+    create: {
+      value: function create(obj) {
+        var notification = {
+          id: obj.sccNtfreqId,
+          tag: obj.sccNtfreqItmTag,
+          type: obj.sccNtfreqType,
+          importance: obj.sccNtfreqImptnce,
+          dateTime: obj.sccRowAddDttm,
+          subject: obj.sccNtfreqSubject,
+          message: obj.sccNtfreqMsgtext
+        };
+
+        return new Notification(notification);
+      }
+    }
+  });
+
+  return Notification;
+})();
+
+module.exports = Notification;
+
+/* eslint-enable */
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Serves as the model for NtfEvent data
+ *
+ * @class
+ */
+
+var NtfEvent = (function () {
+  function NtfEvent(eventData) {
+    var _temp;
+
+    _classCallCheck(this, NtfEvent);
+
+    /* eslint-disable */
+    var fields = (_temp = eventData, this.id = _temp.id, this.status = _temp.status, this.startDate = _temp.startDate, this.message = _temp.message, _temp);
+  }
+
+  _createClass(NtfEvent, null, {
+    create: {
+      value: function create(obj) {
+        var ntfEvent = {
+          id: obj.sccNtfevtReqId,
+          status: obj.sccNtfevtStatus,
+          startDate: obj.sccNtfevtStartdt,
+          message: obj.sccNtfevtMessage
+        };
+
+        return new NtfEvent(ntfEvent);
+      }
+    }
+  });
+
+  return NtfEvent;
+})();
+
+module.exports = NtfEvent;
+
+/* eslint-enable */
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Serves as the model for Picture data
+ *
+ * @class
+ */
+
+var Picture = (function () {
+
+  /**
+   * Picture constructor
+   *
+   * @param {Object} pictureData
+   */
+
+  function Picture(pictureData) {
+    var _temp;
+
+    _classCallCheck(this, Picture);
+
+    /* eslint-disable */
+    var fields = (_temp = pictureData, this.base64 = _temp.base64, _temp);
+  }
+
+  _createClass(Picture, null, {
+    create: {
+      value: function create(obj) {
+        var picture = {
+          base64: obj.sccGetphotoResp.employeePhoto.base64data
+        };
+
+        return new Picture(picture);
+      }
+    }
+  });
+
+  return Picture;
+})();
+
+module.exports = Picture;
+
+/* eslint-enable */
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+/**
+ * Serves as the model to serialize data into a `Profile` object.
+ *
+ * @class
+ */
+
+var Profile = (function () {
+
+  /**
+   * The constructor for a `Profile` object.
+   *
+   * @constructs Profile
+   * @params {Object} profileData - the data that generates the public fields of the Profile instance.
+   */
+
+  function Profile(profileData) {
+    var _temp;
+
+    _classCallCheck(this, Profile);
+
+    /* eslint-disable */
+    var fields = (_temp = profileData, this.name = _temp.name, this.acadCareer = _temp.acadCareer, _temp);
+  }
+
+  _createClass(Profile, null, {
+    create: {
+      value: function create(obj) {
+        var profile = {
+          name: obj.sccGetconstResp.constituent.perNames.perName[0].nameDisplay,
+          acadCareer: obj.sccGetconstResp.constituent.residencyOfficials.residencyOfficial.acadCareer
+        };
+
+        return new Profile(profile);
+      }
+    }
+  });
+
+  return Profile;
+})();
+
+module.exports = Profile;
+
+/* eslint-enable */
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+var _ = require("underscore");
+var moment = require("moment");
+
+/**
+ * Serves as the model for Schedule data
+ *
+ * @class
+ */
+
+var Schedule = (function () {
+  function Schedule(scheduleData) {
+    var _temp;
+
+    _classCallCheck(this, Schedule);
+
+    /* eslint-disable */
+    var fields = (_temp = scheduleData, this.terms = _temp.terms, _temp);
+  }
+
+  _createClass(Schedule, null, {
+    create: {
+      value: function create(obj, mode) {
+        var terms = _.map(obj.ssrGetEnrollmentResp.ssrEnrlStudylist.ssrEnrlTerms.ssrEnrlTerm, function (term) {
+          return Term.create(term, mode);
+        });
+
+        var schedule = {
+          terms: terms
+        };
+
+        return new Schedule(schedule);
+      }
+    }
+  });
+
+  return Schedule;
+})();
+
+var Term = (function () {
+  function Term(termData) {
+    var _temp;
+
+    _classCallCheck(this, Term);
+
+    /* eslint-disable */
+    var fields = (_temp = termData, this.acadCareerDesc = _temp.acadCareerDesc, this.curGpa = _temp.curGpa, this.cumGpa = _temp.cumGpa, this.termName = _temp.termName, this.institution = _temp.institution, this.termBeginDate = _temp.termBeginDate, this.termEndDate = _temp.termEndDate, this.courses = _temp.courses, _temp);
+  }
+
+  _createClass(Term, null, {
+    create: {
+      value: function create(obj, mode) {
+        var term = {
+          acadCareerDesc: obj.acadCareerLovdescr,
+          curGpa: obj.curGpa,
+          cumGpa: obj.cumGpa,
+          termName: obj.strmLovdescr,
+          institution: obj.institutionLovdescr,
+          termBeginDate: obj.termBeginDt,
+          termEndDate: obj.termEndDt
+        };
+
+        if (mode !== 3 && obj.enrollmentDetails.enrollmentDetail) {
+          var courses = [];
+
+          if (_.isArray(obj.enrollmentDetails.enrollmentDetail)) {
+            courses = obj.enrollmentDetails.enrollmentDetail.map(function (course) {
+              return Course.create(course, mode);
+            });
+          } else {
+            courses.push(Course.create(obj.enrollmentDetails.enrollmentDetail, mode));
+          }
+
+          term = _.extend(term, {
+            courses: courses
+          });
+        }
+
+        return new Term(term);
+      }
+    }
+  });
+
+  return Term;
+})();
+
+var Course = (function () {
+  function Course(courseData) {
+    var _temp;
+
+    _classCallCheck(this, Course);
+
+    /* eslint-disable */
+    var fields = (_temp = courseData, this.desc = _temp.desc, this.status = _temp.status, this.units = _temp.units, this.gradeDesc = _temp.gradeDesc, this.grade = _temp.grade, this.course = _temp.course, this.sessions = _temp.sessions, _temp);
+  }
+
+  _createClass(Course, null, {
+    create: {
+      value: function create(obj, mode) {
+        var course = {
+          desc: obj.courseTitleLong,
+          status: obj.enrollStatusDescr,
+          units: obj.untTaken,
+          gradeDesc: obj.gradeBasisDescrformal,
+          grade: obj.crseGradeOff,
+          course: "" + obj.subject + " " + obj.catalogNbr
+        };
+
+        if (mode === 1) {
+          var sessions = [];
+
+          if (_.isArray(obj.enrlClassSections.enrlClassSection)) {
+            sessions = obj.enrlClassSections.enrlClassSection.map(function (session) {
+              return Session.create(session, mode);
+            });
+          } else {
+            sessions.push(Session.create(obj.enrlClassSections.enrlClassSection, mode));
+          }
+
+          course = _.extend(course, {
+            sessions: sessions
+          });
+        } else if (mode === 2) {
+          var sessions = Session.create(obj, mode);
+
+          course = _.extend(course, {
+            sessions: sessions
+          });
+        }
+
+        return new Course(course);
+      }
+    }
+  });
+
+  return Course;
+})();
+
+var Session = (function () {
+  function Session(sessionData) {
+    var _temp;
+
+    _classCallCheck(this, Session);
+
+    /* eslint-disable */
+    var fields = (_temp = sessionData, this.classNumber = _temp.classNumber, this.classSection = _temp.classSection, this.component = _temp.component, this.daysTimes = _temp.daysTimes, this.room = _temp.room, this.instructor = _temp.instructor, this.startDate = _temp.startDate, this.endDate = _temp.endDate, _temp);
+  }
+
+  _createClass(Session, null, {
+    create: {
+      value: function create(obj, mode) {
+        var session = undefined;
+
+        if (mode === 1) {
+          var meeting = obj.classMeetingPatterns.classMeetingPattern;
+
+          session = {
+            classNumber: obj.classNbr,
+            classSection: obj.classSection,
+            component: obj.ssrComponentLovdescr,
+            daysTimes: this.formatDaysTimes(meeting),
+            room: meeting.ssrMtgLocLong,
+            instructor: meeting.ssrInstrLong,
+            startDate: moment(obj.startDt, "YYYY-MM-DD").format("MM/DD/YYYY"),
+            endDate: moment(obj.endDt, "YYYY-MM-DD").format("MM/DD/YYYY")
+          };
+        } else if (mode === 2) {
+          session = {
+            classNumber: obj.classNbr,
+            instructor: obj.ssrInstrLong
+          };
+        }
+
+        return new Session(session);
+      }
+    },
+    formatDaysTimes: {
+      value: function formatDaysTimes(obj) {
+        var days = "";
+
+        if (obj.mon === "Y") {
+          days += "M";
+        }
+        if (obj.tues === "Y") {
+          days += "T";
+        }
+        if (obj.wed === "Y") {
+          days += "W";
+        }
+        if (obj.thurs === "Y") {
+          days += "R";
+        }
+        if (obj.fri === "Y") {
+          days += "F";
+        }
+        if (obj.sat === "Y") {
+          days += "S";
+        }
+        if (obj.sun === "Y") {
+          days += "U";
+        }
+        if (days === "") {
+          days = "Invalid Day";
+        }
+
+        var start = moment(obj.meetingTimeStart, "hh:mm:ss.SSS").isValid() ? moment(obj.meetingTimeStart, "hh:mm:ss.SSS").format("hh:mma") : "Invalid Time";
+        var end = moment(obj.meetingTimeEnd, "hh:mm:ss.SSS").isValid() ? moment(obj.meetingtimeEnd, "hh:mm:ss.SSS").format("hh:mma") : "Invalid Time";
+
+        return "" + days + ": " + start + " - " + end;
+      }
+    }
+  });
+
+  return Session;
+})();
+
+module.exports = Schedule;
+
+/* eslint-enable */
+
+/* eslint-enable */
+
+/* eslint-enable */
+
+/* eslint-enable */
