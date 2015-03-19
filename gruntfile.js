@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         footer: 'module.exports = ArusPSConnector;\n'
       },
       dist: {
-        src: ['lib/**/*.js'],
+        src: ['config.js', 'lib/**/*.js'],
         dest: 'build/compiled.js'
       }
     },
@@ -33,7 +33,10 @@ module.exports = function(grunt) {
       },
       scripts: {
         files: '**/*.js',
-        tasks: ['concat', 'babel']
+        tasks: ['concat', 'babel'],
+        options: {
+          debounceDelay: 250
+        }
       }
     }
   });
