@@ -765,6 +765,8 @@ var Picture = (function () {
   return Picture;
 })();
 
+module.exports = Picture;
+
 /**
  * Serves as the model to serialize data into a `Profile` object.
  *
