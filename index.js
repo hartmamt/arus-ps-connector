@@ -1019,6 +1019,8 @@ var Session = (function () {
   return Session;
 })();
 
+module.exports = Schedule;
+
 var _ = require("underscore");
 
 /**
