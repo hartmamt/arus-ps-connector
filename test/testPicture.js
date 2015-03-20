@@ -9,7 +9,7 @@ import Picture from '../lib/models/Picture.js';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe.only('#getPicture', () => {
+describe('#getPicture', () => {
   let params = {
     url: config.get('getPictureUrl'),
     auth: [config.get('username'), config.get('password')],
