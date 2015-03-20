@@ -6,6 +6,8 @@ import Request from '../lib/Request.js';
 import ArusPSConnector from '../index.js';
 import Profile from '../lib/models/Profile.js';
 
+import request from 'request';
+
 chai.should();
 chai.use(chaiAsPromised);
 

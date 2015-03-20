@@ -9,7 +9,7 @@ import Schedule from '../lib/models/Schedule.js';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe.only('#getSchedule', () => {
+describe('#getSchedule', () => {
   let createParams = (mode) => {
     return {
       url: config.get('getScheduleUrl'),

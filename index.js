@@ -1,6 +1,6 @@
 "use strict";
 
-var _objectDestructuringEmpty = function (obj) { if (obj == null) throw new TypeError("Cannot destructure undefined"); };
+var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 var _toConsumableArray = function (arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } };
 
@@ -92,6 +92,12 @@ module.exports = conf;
 
 var superagent = require("superagent");
 
+var req = _interopRequire(require("request"));
+
+var axios = _interopRequire(require("axios"));
+
+var base64 = _interopRequire(require("base-64"));
+
 /**
  * Provides methods to make REST calls. It currently uses the the superagent
  * request library but can be configured to use other libraries.
@@ -142,6 +148,40 @@ var Request = (function () {
               reject(err);
             }
           });
+        });
+      }
+    },
+    getNoAgent: {
+      value: function getNoAgent(params) {
+        return new Promise(function (resolve, reject) {
+          req({
+            method: "GET",
+            url: params.url,
+            auth: {
+              user: params.auth[0],
+              pass: params.auth[1]
+            }
+          }, function (err, resp, text) {
+            if (err) {
+              reject(err);
+            }
+
+            resolve({ text: text, resp: resp });
+          });
+        });
+      }
+    },
+    getAxios: {
+      value: function getAxios(params) {
+        var creds = "" + params.auth[0] + ":" + params.auth[1];
+        var auth = base64.encode(creds);
+
+        return axios({
+          method: "get",
+          url: params.url,
+          headers: {
+            authorization: "Basic " + auth
+          }
         });
       }
     },
@@ -1020,26 +1060,4 @@ var Session = (function () {
 })();
 
 module.exports = Schedule;
-
-var _ = require("underscore");
-
-/**
- * The model for Subjects data
- *
- * @class
- */
-
-var Subjects = function Subjects(subjectsData) {
-  var _temp;
-
-  _classCallCheck(this, Subjects);
-
-  /* eslint-disable */
-  var fields = (_temp = subjectsData, _objectDestructuringEmpty(_temp), _temp);
-
-  console.log(subjectsData);
-};
-
 module.exports = ArusPSConnector;
-
-/* eslint-enable */
