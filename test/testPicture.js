@@ -3,13 +3,13 @@ import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
 import Request from '../lib/Request.js';
-import ArusPSConnector from '../index.js';
+import ArusPSConnector from '../lib/index.js';
 import Picture from '../lib/models/Picture.js';
 
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('#getPicture', () => {
+describe.only('#getPicture', () => {
   let params = {
     url: config.get('getPictureUrl'),
     auth: [config.get('username'), config.get('password')],
@@ -35,16 +35,8 @@ describe('#getPicture', () => {
   });
 
   it('should return an instance of Picture', () => {
-    let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getPicture(params)
-        .then(res => {
-          resolve(res instanceof Picture);
-        }).catch(err => {
-          reject(err);
-        });
-    });
-
-    return resp.should.become(true);
+    return ArusPSConnector.getPicture(params)
+      .should.eventually.be.an.instanceof(Picture);
   });
 
   it('should return an instance of the passed in model', () => {
@@ -68,15 +60,7 @@ describe('#getPicture', () => {
       }
     }
 
-    let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getPicture(params, PictureMock)
-        .then(res => {
-          resolve(res instanceof PictureMock);
-        }).catch(err => {
-          reject(err);
-        });
-    });
-
-    return resp.should.become(true);
+    return ArusPSConnector.getPicture(params, PictureMock)
+      .should.eventually.be.an.instanceof(PictureMock);
   });
 });

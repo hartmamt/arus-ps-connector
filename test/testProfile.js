@@ -3,14 +3,11 @@ import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
 import Request from '../lib/Request.js';
-import ArusPSConnector from '../index.js';
+import ArusPSConnector from '../lib/index.js';
 import Profile from '../lib/models/Profile.js';
-
-import request from 'request';
 
 chai.should();
 chai.use(chaiAsPromised);
-
 
 describe('#getProfile', () => {
   let params = {
@@ -37,16 +34,8 @@ describe('#getProfile', () => {
   });
 
   it('should return an instance of Profile', () => {
-    let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getProfile(params)
-        .then((res) => {
-          resolve(res instanceof Profile);
-        }).catch((err) => {
-          reject(err);
-        });
-    });
-
-    return resp.should.become(true);
+    return ArusPSConnector.getProfile(params)
+      .should.eventually.be.an.instanceof(Profile);
   });
 
   it('should return an instance of the passed in model', () => {
@@ -55,7 +44,7 @@ describe('#getProfile', () => {
       constructor(fields) {
         /* eslint-disable */
         let profile = {
-
+          name: this.name
         } = fields;
         /* eslint-enable */
       }
@@ -69,15 +58,7 @@ describe('#getProfile', () => {
       }
     }
 
-    let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getProfile(params, ProfileMock)
-        .then(res => {
-          resolve(res instanceof ProfileMock);
-        }).catch(err => {
-          reject(err);
-        });
-    });
-
-    return resp.should.become(true);
+    return ArusPSConnector.getProfile(params, ProfileMock)
+      .should.eventually.be.an.instanceof(ProfileMock);
   });
 });
