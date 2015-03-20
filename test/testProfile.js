@@ -27,7 +27,7 @@ describe('#getProfile', () => {
     let resp = new Promise((resolve, reject) => {
       Request.get(params)
         .then(res => {
-          resolve(res.text);
+          resolve(res.data);
         }).catch(err => {
           reject(err);
         });
@@ -36,7 +36,7 @@ describe('#getProfile', () => {
     return resp.should.not.become(undefined);
   });
 
-  it.skip('should return an instance of Profile', () => {
+  it('should return an instance of Profile', () => {
     let resp = new Promise((resolve, reject) => {
       ArusPSConnector.getProfile(params)
         .then((res) => {
@@ -49,7 +49,7 @@ describe('#getProfile', () => {
     return resp.should.become(true);
   });
 
-  it.skip('should return an instance of the passed in model', () => {
+  it('should return an instance of the passed in model', () => {
 
     class ProfileMock {
       constructor(fields) {

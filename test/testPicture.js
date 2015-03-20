@@ -25,7 +25,7 @@ describe('#getPicture', () => {
       Request.get(params)
         .then(res => {
           // console.log(res);
-          resolve(res.text);
+          resolve(res.data);
         }).catch(err => {
           reject(err);
         });
@@ -34,7 +34,7 @@ describe('#getPicture', () => {
     return resp.should.not.become(undefined);
   });
 
-  it.skip('should return an instance of Picture', () => {
+  it('should return an instance of Picture', () => {
     let resp = new Promise((resolve, reject) => {
       ArusPSConnector.getPicture(params)
         .then(res => {
@@ -47,7 +47,7 @@ describe('#getPicture', () => {
     return resp.should.become(true);
   });
 
-  it.skip('should return an instance of the passed in model', () => {
+  it('should return an instance of the passed in model', () => {
 
     class PictureMock {
       constructor(fields) {

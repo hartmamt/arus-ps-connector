@@ -2,8 +2,6 @@
 
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-var _toConsumableArray = function (arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } };
-
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
@@ -124,65 +122,24 @@ var Request = (function () {
        */
 
       value: function get(params) {
-        return new Promise(function (resolve, reject) {
-          if (!params.url) {
-            throw "Error: Endpoint Url not available";
-          }
+        if (!params.url) {
+          throw new Error("Endpoint url not defined");
+        }
 
-          var request = superagent.get(params.url);
-          if (params.auth) {
-            request.auth.apply(request, _toConsumableArray(params.auth));
-          }
-          if (params.acceptType) {
-            request.accept(params.acceptType);
-          }
+        if (params.auth) {
+          var creds = "" + params.auth[0] + ":" + params.auth[1];
+          var auth = "Basic " + base64.encode(creds);
+
           if (params.headers) {
-            for (var header in params.headers) {
-              request.set(header, params.headers[header]);
-            }
+            params.headers.authorization = auth;
+          } else {
+            params.headers = {
+              authorization: auth
+            };
           }
-          request.end(function (err, res) {
-            if (res.ok) {
-              resolve(res);
-            } else {
-              reject(err);
-            }
-          });
-        });
-      }
-    },
-    getNoAgent: {
-      value: function getNoAgent(params) {
-        return new Promise(function (resolve, reject) {
-          req({
-            method: "GET",
-            url: params.url,
-            auth: {
-              user: params.auth[0],
-              pass: params.auth[1]
-            }
-          }, function (err, resp, text) {
-            if (err) {
-              reject(err);
-            }
+        }
 
-            resolve({ text: text, resp: resp });
-          });
-        });
-      }
-    },
-    getAxios: {
-      value: function getAxios(params) {
-        var creds = "" + params.auth[0] + ":" + params.auth[1];
-        var auth = base64.encode(creds);
-
-        return axios({
-          method: "get",
-          url: params.url,
-          headers: {
-            authorization: "Basic " + auth
-          }
-        });
+        return axios.get(params.url, { headers: params.headers });
       }
     },
     post: {
@@ -198,34 +155,24 @@ var Request = (function () {
        */
 
       value: function post(params) {
-        return new Promise(function (resolve, reject) {
-          if (!params.url) {
-            throw "Error: Endpoint Url not available";
-          }
+        if (!params.url) {
+          throw new Error("Endpoint url not defined");
+        }
 
-          var request = superagent.post(params.url);
-          if (params.auth) {
-            request.auth.apply(request, _toConsumableArray(params.auth));
-          }
-          if (params.acceptType) {
-            request.accept(params.acceptType);
-          }
+        if (params.auth) {
+          var creds = "" + params.auth[0] + ":" + params.auth[1];
+          var auth = "Basic " + base64.encode(creds);
+
           if (params.headers) {
-            for (var header in params.headers) {
-              request.set(header, params.headers[header]);
-            }
+            params.headers.authorization = auth;
+          } else {
+            params.headers = {
+              authorization: auth
+            };
           }
-          if (params.send) {
-            request.send(params.send);
-          }
-          request.end(function (err, res) {
-            if (res.ok) {
-              resolve(res);
-            } else {
-              reject(err);
-            }
-          });
-        });
+        }
+
+        return axios.post(params.url, params.send, { headers: params.headers });
       }
     },
     update: {
@@ -395,7 +342,7 @@ var Serializer = (function () {
       value: function schedule(scheduleData, payloadMode) {
         var model = arguments[2] === undefined ? Schedule : arguments[2];
 
-        return model.create(serialize(scheduleData), payloadMode);
+        return model.create.call(this, serialize(scheduleData), payloadMode);
       }
     },
     subjects: {
@@ -495,7 +442,7 @@ var ArusPSConnector = {
       Request.get(requestParams).then(function (res) {
 
         var jRes = undefined;
-        parseString(res.text, function (err, parsedRes) {
+        parseString(res.data, function (err, parsedRes) {
           if (!err) {
             jRes = parsedRes;
           } else {
@@ -535,7 +482,7 @@ var ArusPSConnector = {
       Request.get(requestParams).then(function (res) {
 
         var jRes = undefined;
-        parseString(res.text, function (err, parsedRes) {
+        parseString(res.data, function (err, parsedRes) {
           if (!err) {
             jRes = parsedRes;
           } else {
@@ -564,13 +511,15 @@ var ArusPSConnector = {
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
   getSchedule: function getSchedule(requestParams, _x, model) {
+    var _this = this;
+
     var payloadMode = arguments[1] === undefined ? 1 : arguments[1];
 
     return new Promise(function (resolve, reject) {
       Request.post(requestParams).then(function (res) {
 
         var jRes = undefined;
-        parseString(res.text, function (err, parsedRes) {
+        parseString(res.data, function (err, parsedRes) {
           if (!err) {
             jRes = parsedRes;
           } else {
@@ -578,7 +527,7 @@ var ArusPSConnector = {
           }
         });
 
-        var schedule = Serializer.schedule(jRes, payloadMode, model);
+        var schedule = Serializer.schedule.call(_this, jRes, payloadMode, model);
 
         resolve(schedule);
       })["catch"](function (err) {
@@ -599,7 +548,7 @@ var ArusPSConnector = {
       Request.post(requestParams).then(function (res) {
 
         var jRes = undefined;
-        parseString(res.text, function (err, parsedRes) {
+        parseString(res.data, function (err, parsedRes) {
           if (!err) {
             jRes = parsedRes;
           } else {
@@ -631,7 +580,7 @@ var ArusPSConnector = {
       Request.post(requestParams).then(function (res) {
 
         var jRes = undefined;
-        parseString(res.text, function (err, parsedRes) {
+        parseString(res.data, function (err, parsedRes) {
           if (!err) {
             jRes = parsedRes;
           } else {
@@ -662,7 +611,7 @@ var ArusPSConnector = {
     return new Promise(function (resolve, reject) {
       Request.post(requestParams).then(function (res) {
         var jRes = undefined;
-        parseString(res.text, function (err, parsedRes) {
+        parseString(res.data, function (err, parsedRes) {
           if (!err) {
             jRes = parsedRes;
           } else {
@@ -698,6 +647,8 @@ var ArusPSConnector = {
     });
   }
 };
+
+module.exports = ArusPSConnector;
 
 /**
  * Serializes Notification data
@@ -876,7 +827,9 @@ var Schedule = (function () {
         var schedule = {
           terms: terms
         };
-
+        var newSchedule = new this(schedule);
+        console.log(newSchedule);
+        console.log(newSchedule instanceof Schedule);
         return new Schedule(schedule);
       }
     }
@@ -1060,4 +1013,3 @@ var Session = (function () {
 })();
 
 module.exports = Schedule;
-module.exports = ArusPSConnector;

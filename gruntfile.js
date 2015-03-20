@@ -6,8 +6,8 @@ module.exports = function(grunt) {
       options: {
         process: function(src, filepath) {
           return src.replace(/(?:\/\*.*\*\/|\/\/.*)$\r\n(^.*$)/gm, '$1');
-        },
-        footer: 'module.exports = ArusPSConnector;\n'
+        }
+        // ,footer: 'module.exports = ArusPSConnector;\n'
       },
       dist: {
         src: ['config.js', 'lib/**/*.js'],
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
         }
       },
       scripts: {
-        files: '**/*.js',
+        files: ['config.js', 'lib/**/*.js'],
         tasks: ['concat', 'babel'],
         options: {
           debounceDelay: 250

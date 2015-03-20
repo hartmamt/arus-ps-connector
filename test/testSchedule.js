@@ -3,13 +3,13 @@ import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
 import Request from '../lib/Request.js';
-import ArusPSConnector from '../index.js';
+import ArusPSConnector from '../lib/index.js';
 import Schedule from '../lib/models/Schedule.js';
 
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('#getSchedule', () => {
+describe.only('#getSchedule', () => {
   let createParams = (mode) => {
     return {
       url: config.get('getScheduleUrl'),
@@ -20,11 +20,9 @@ describe('#getSchedule', () => {
   };
 
   let params;
-  let data;
 
   before(() => {
     params = createParams(1);
-    // console.log(params);
   });
 
   it('should return ok', () => {
@@ -35,8 +33,7 @@ describe('#getSchedule', () => {
     let resp = new Promise((resolve, reject) => {
       Request.post(params)
         .then(res => {
-          data = res;
-          resolve(res.text);
+          resolve(res.data);
         }).catch(err => {
           reject(err);
         });
@@ -45,25 +42,12 @@ describe('#getSchedule', () => {
     return resp.should.not.become(undefined);
   });
 
-  it.skip('should return instance of Schedule', () => {
-    let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getSchedule(params)
-        .then(res => {
-          resolve(res);
-        }).catch(err => {
-          reject(err);
-        });
-    });
-
-    return resp.should.eventually.be.an.instanceof(Schedule);
-  });
-
-  it.skip('should return the same as previous test', () => {
+  it('should return instance of Schedule', () => {
     return ArusPSConnector.getSchedule(params)
       .should.eventually.be.an.instanceof(Schedule);
   });
 
-  it.skip('should return an instance of passed in model', () => {
+  it('should return an instance of passed in model', () => {
 
     class ScheduleMock {
       contructor(fields) {
@@ -85,19 +69,7 @@ describe('#getSchedule', () => {
       }
     }
 
-    let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getSchedule(params, ScheduleMock)
-        .then(res => {
-          resolve(res);
-        }).catch(err => {
-          reject(err);
-        });
-    });
-
-    return resp.should.eventually.be.an.instanceof(ScheduleMock);
-  });
-
-  after(() => {
-    console.log(data);
+    return ArusPSConnector.getSchedule(params, ScheduleMock)
+      .should.eventually.be.an.instanceof(ScheduleMock);
   });
 });
