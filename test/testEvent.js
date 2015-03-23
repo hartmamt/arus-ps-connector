@@ -4,17 +4,16 @@ import config from '../config.js';
 
 import Request from '../lib/Request.js';
 import ArusPSConnector from '../lib/index.js';
-import Notification from '../lib/models/Notification.js';
+import NtfEvent from '../lib/models/NtfEvent.js';
 
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('#getNotification', () => {
+describe('#getNotificationEvents', () => {
   let params = {
-    url: config.get('getNotificationsUrl'),
+    url: config.get('getNotificationEventsUrl'),
     auth: [config.get('username'), config.get('password')],
-    send: `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>10000</NUM_PAST_DAYS><INCLUDE_EVENTS>Y</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`,
-    acceptType: 'application/xml'
+    send: `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>10000</NUM_PAST_DAYS><INCLUDE_EVENTS>Y</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`
   };
 
   it('should return ok', () => {
@@ -34,9 +33,9 @@ describe('#getNotification', () => {
     return resp.should.not.become(undefined);
   });
 
-  it('should return an instance of Notification', () => {
+  it('should return an instance of NtfEvent', () => {
     let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getNotifications(params)
+      ArusPSConnector.getNotificationEvents(params)
         .then(res => {
           resolve(res[0]);
         }).catch(err => {
@@ -44,27 +43,27 @@ describe('#getNotification', () => {
         });
     });
 
-    return resp.should.eventually.be.an.instanceof(Notification);
+    return resp.should.eventually.be.an.instanceof(NtfEvent);
   });
 
-  it('should return an instance of passed in model', () => {
-    class NotificationMock {
+  it('should return an instance of passeed in model', () => {
+    class EventMock {
       constructor(fields) {
-        let notification = {
+        let event = {
           desc: this.desc
         } = fields;
       }
       static create(obj) {
-        let notification = {
-          desc: 'Notification Mock'
+        let event = {
+          desc: 'Event Mock'
         };
 
-        return new this(notification);
+        return new this(event);
       }
     }
 
     let resp = new Promise((resolve, reject) => {
-      ArusPSConnector.getNotifications(params, NotificationMock)
+      ArusPSConnector.getNotificationEvents(params, EventMock)
         .then(res => {
           resolve(res[0]);
         }).catch(err => {
@@ -72,6 +71,10 @@ describe('#getNotification', () => {
         });
     });
 
-    return resp.should.eventually.be.an.instanceof(NotificationMock);
+    return resp.should.eventually.be.an.instanceof(EventMock);
+  });
+
+  it.skip('should be change the read status', () => {
+
   });
 });
