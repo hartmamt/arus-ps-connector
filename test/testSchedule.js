@@ -10,20 +10,14 @@ chai.should();
 chai.use(chaiAsPromised);
 
 describe('#getSchedule', () => {
-  let createParams = (mode) => {
-    return {
-      url: config.get('getScheduleUrl'),
-      auth: [config.get('username'), config.get('password')],
-      send: `<SSR_GET_ENROLLMENT_REQ><SCC_ENTITY_INST_ID></SCC_ENTITY_INST_ID><EMPLID></EMPLID><ACAD_CAREER>UGRD</ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${mode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`,
-      acceptType: 'application/xml'
-    };
+  let mode = 1;
+
+  let params = {
+    url: config.get('getScheduleUrl'),
+    auth: [config.get('username'), config.get('password')],
+    send: `<SSR_GET_ENROLLMENT_REQ><SCC_ENTITY_INST_ID></SCC_ENTITY_INST_ID><EMPLID></EMPLID><ACAD_CAREER>UGRD</ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${mode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`,
+    acceptType: 'application/xml'
   };
-
-  let params;
-
-  before(() => {
-    params = createParams(1);
-  });
 
   it('should return ok', () => {
     return Request.post(params).should.be.fulfilled;
@@ -69,7 +63,7 @@ describe('#getSchedule', () => {
       }
     }
 
-    return ArusPSConnector.getSchedule(params, ScheduleMock)
+    return ArusPSConnector.getSchedule(params, mode, ScheduleMock)
       .should.eventually.be.an.instanceof(ScheduleMock);
   });
 });
