@@ -75,5 +75,10 @@ describe('Notifications', () => {
 
       return resp.should.eventually.be.an.instanceof(NotificationMock);
     });
+
+    it('should be rejected with a TypeError', () => {
+      return ArusPSConnector.getNotifications(params, {})
+        .should.be.rejectedWith(TypeError);
+    });
   });
 });

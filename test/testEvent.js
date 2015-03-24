@@ -47,7 +47,7 @@ describe('Events', () => {
       return resp.should.eventually.be.an.instanceof(NtfEvent);
     });
 
-    it('should return an instance of passeed in model', () => {
+    it('should return an instance of passed in model', () => {
       class EventMock {
         constructor(fields) {
           let event = {
@@ -73,6 +73,11 @@ describe('Events', () => {
       });
 
       return resp.should.eventually.be.an.instanceof(EventMock);
+    });
+
+    it('should be rejected with a TypeError', () => {
+      return ArusPSConnector.getNotificationEvents(params, {})
+        .should.be.rejectedWith(TypeError);
     });
   });
 
@@ -133,6 +138,11 @@ describe('Events', () => {
       });
 
       return changedStatus.should.become(newStatus);
+    });
+
+    it('should be rejected with a TypeError', () => {
+      return ArusPSConnector.changeReadStatus('')
+        .should.be.rejectedWith(TypeError);
     });
 
     after((done) => {

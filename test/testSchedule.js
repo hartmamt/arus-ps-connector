@@ -64,8 +64,13 @@ describe('Schedule', () => {
         }
       }
 
-      return ArusPSConnector.getSchedule(params, mode, ScheduleMock)
+      return ArusPSConnector.getSchedule(params, ScheduleMock, mode)
         .should.eventually.be.an.instanceof(ScheduleMock);
+    });
+
+    it('should be rejected with a TypeError', () => {
+      return ArusPSConnector.getSchedule(params, mode)
+        .should.be.rejectedWith(TypeError);
     });
   });
 });

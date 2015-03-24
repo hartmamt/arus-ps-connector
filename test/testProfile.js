@@ -62,5 +62,10 @@ describe('Profile', () => {
       return ArusPSConnector.getProfile(params, ProfileMock)
         .should.eventually.be.an.instanceof(ProfileMock);
     });
+
+    it('should be rejected with a TypeError', () => {
+      return ArusPSConnector.getProfile(params, {})
+        .should.be.rejectedWith(TypeError);
+    });
   });
 });

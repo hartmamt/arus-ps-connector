@@ -64,5 +64,10 @@ describe('Picture', () => {
       return ArusPSConnector.getPicture(params, PictureMock)
         .should.eventually.be.an.instanceof(PictureMock);
     });
+
+    it('should be rejected with a TypeError', () => {
+      return ArusPSConnector.getPicture(params, {})
+        .should.be.rejectedWith(TypeError);
+    });
   });
 });
