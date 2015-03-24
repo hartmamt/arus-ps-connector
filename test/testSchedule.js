@@ -9,61 +9,63 @@ import Schedule from '../lib/models/Schedule.js';
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('#getSchedule', () => {
-  let mode = 1;
+describe('Schedule', () => {
+  describe('#getSchedule', () => {
+    let mode = 1;
 
-  let params = {
-    url: config.get('getScheduleUrl'),
-    auth: [config.get('username'), config.get('password')],
-    send: `<SSR_GET_ENROLLMENT_REQ><SCC_ENTITY_INST_ID></SCC_ENTITY_INST_ID><EMPLID></EMPLID><ACAD_CAREER>UGRD</ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${mode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`,
-    acceptType: 'application/xml'
-  };
+    let params = {
+      url: config.get('getScheduleUrl'),
+      auth: [config.get('username'), config.get('password')],
+      send: `<SSR_GET_ENROLLMENT_REQ><SCC_ENTITY_INST_ID></SCC_ENTITY_INST_ID><EMPLID></EMPLID><ACAD_CAREER>UGRD</ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${mode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`,
+      acceptType: 'application/xml'
+    };
 
-  it('should return ok', () => {
-    return Request.post(params).should.be.fulfilled;
-  });
-
-  it('should return data', () => {
-    let resp = new Promise((resolve, reject) => {
-      Request.post(params)
-        .then(res => {
-          resolve(res.data);
-        }).catch(err => {
-          reject(err);
-        });
+    it('should return ok', () => {
+      return Request.post(params).should.be.fulfilled;
     });
 
-    return resp.should.not.become(undefined);
-  });
+    it('should return data', () => {
+      let resp = new Promise((resolve, reject) => {
+        Request.post(params)
+          .then(res => {
+            resolve(res.data);
+          }).catch(err => {
+            reject(err);
+          });
+      });
 
-  it('should return instance of Schedule', () => {
-    return ArusPSConnector.getSchedule(params)
-      .should.eventually.be.an.instanceof(Schedule);
-  });
+      return resp.should.not.become(undefined);
+    });
 
-  it('should return an instance of passed in model', () => {
+    it('should return instance of Schedule', () => {
+      return ArusPSConnector.getSchedule(params)
+        .should.eventually.be.an.instanceof(Schedule);
+    });
 
-    class ScheduleMock {
-      contructor(fields) {
-        /* eslint-disable */
-        let schedule = {
-          desc: this.desc,
-          terms: this.terms
-        } = fields;
-        /* eslint-enable */
+    it('should return an instance of passed in model', () => {
+
+      class ScheduleMock {
+        contructor(fields) {
+          /* eslint-disable */
+          let schedule = {
+            desc: this.desc,
+            terms: this.terms
+          } = fields;
+          /* eslint-enable */
+        }
+
+        static create(obj) {
+          let schedule = {
+            desc: 'Mocked Schedule',
+            terms: ['mockTerm1', 'mockTerm2']
+          };
+
+          return new ScheduleMock(schedule);
+        }
       }
 
-      static create(obj) {
-        let schedule = {
-          desc: 'Mocked Schedule',
-          terms: ['mockTerm1', 'mockTerm2']
-        };
-
-        return new ScheduleMock(schedule);
-      }
-    }
-
-    return ArusPSConnector.getSchedule(params, mode, ScheduleMock)
-      .should.eventually.be.an.instanceof(ScheduleMock);
+      return ArusPSConnector.getSchedule(params, mode, ScheduleMock)
+        .should.eventually.be.an.instanceof(ScheduleMock);
+    });
   });
 });
