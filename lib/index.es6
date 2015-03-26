@@ -2,7 +2,10 @@ import { parseString } from 'xml2js';
 import Request from './Request.js';
 import Serializer from './Serializer.js';
 
-let ArusPSConnector = {
+import config from '../config.js';
+import { getCached, setCached } from './cache.js';
+
+var ArusPSConnector = {
 
   /**
    * Retrieves Profile information.
@@ -21,16 +24,44 @@ let ArusPSConnector = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  getProfile(requestParams, model) {
+  getProfile(requestParams, model, useCache = true) {
+
+    let cachedProfile = getCached('profile');
+
+    if (typeof useCache !== 'boolean') {
+      return Promise.reject(new TypeError(`Type of useCache is ${typeof useCache}. Expected a booloean\n\tuseCache = ${useCache}`));
+    } else if (cachedProfile && useCache) {
+      return Promise.resolve(cachedProfile);
+    }
+
+    let defaults;
+    try {
+      defaults = {
+        url: __PROFILE_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getProfileUrl'),
+        auth: [config.get('username'), config.get('password')],
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (typeof params !== 'object') {
+      return Promise.reject(new TypeError(`Type of params is ${typeof params}. Expected an object\n\tparams = ${params}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    }
 
     return new Promise((resolve, reject) => {
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
-      } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Expected ${model} to be a function`));
-      }
-
-      Request.get(requestParams)
+      Request.get(params)
         .then(res => {
 
           let jRes;
@@ -69,16 +100,44 @@ let ArusPSConnector = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  getPicture(requestParams, model) {
+  getPicture(requestParams, model, useCache = true) {
+
+    let cachedPicture = getCached('picture');
+
+    if (typeof useCache !== 'boolean') {
+      return Promise.reject(new TypeError(`Type of useCache is ${typeof useCache}. Expected a boolean\n\tuseCache = ${useCache}`));
+    } else if (useCache && cachedPicture) {
+      return Promise.resolve(cachedPicture);
+    }
+
+    let defaults;
+    try {
+      defaults = {
+        url: __PICTURE_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getPictureUrl'),
+        auth: [config.get('username'), config.get('password')],
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (typeof params !== 'object') {
+      return Promise.reject(new TypeError(`Type of params is ${typeof params}. Expected an object\n\tparams = ${params}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    }
 
     return new Promise((resolve, reject) => {
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
-      } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Expected ${model} to be a function`));
-      }
-
-      Request.get(requestParams)
+      Request.get(params)
         .then(res => {
 
           let jRes;
@@ -106,31 +165,56 @@ let ArusPSConnector = {
    * @static
    * @params {Object} requestParams - an object containing the fields needed to build the remote
    * request
-   * @params {Num} payloadMode - specifies the format the payload will come back in; must be 1, 2,
+   * @params {Num} ssrEnrlGetMode - specifies the format the data will come back in; must be 1, 2,
    * or 3 and defaults to 1
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  getSchedule(requestParams, model, payloadMode = 1, acadCareer = 'UGRD') {
+  getSchedule(requestParams, model, ssrEnrlGetMode = 1, acadCareer = 'UGRD') {
+
+    let defaults;
+    try {
+      defaults = {
+        url: __SCHEDULE_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        send: undefined,
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getScheduleUrl'),
+        auth: [config.get('username'), config.get('password')],
+        send: undefined,
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (params.send) {
+      // Making sure that ssrEnrlGetMode is the same as the one that was sent in the request
+      let modeRe = /<SSR_ENRL_GET_MODE>([1-3])<\/SSR_ENRL_GET_MODE>/;
+      /* eslint-disable */
+      ssrEnrlGetMode = modeRe.exec(params.send)[1];
+      /* eslint-enable */
+    } else {
+      params.send = `<SSR_GET_ENROLLMENT_REQ><SCC_ENTITY_INST_ID></SCC_ENTITY_INST_ID><EMPLID></EMPLID><ACAD_CAREER>${acadCareer}</ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${ssrEnrlGetMode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`;
+    }
+
+    if (typeof params !== 'object') {
+      return Promise.reject(new TypeError(`Type of params is ${typeof params}. Expected an object\n\tparams = ${params}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    } else if (typeof ssrEnrlGetMode !== 'string') {
+      return Promise.reject(new TypeError(`Type of ssrEnrlGetMode is ${typeof ssrEnrlGetMode}. Expected a string\n\tssrEnrlGetMode = ${ssrEnrlGetMode}`));
+    } else if (typeof acadCareer !== 'string') {
+      return Promise.reject(new TypeError(`Type of acadCareer is ${typeof acadCareer}. Expected a string\n\tacadCareer = ${acadCareer}`));
+    }
 
     return new Promise((resolve, reject) => {
-
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
-      } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Expected ${model} to be a function`));
-      } else if (typeof payloadMode !== 'number') {
-        reject(new TypeError(`Expected ${payloadMode} to be a number`));
-      }
-
-      if (!requestParams.send) {
-        if (typeof acadCareer !== 'string') {
-          reject(new TypeError(`Expected ${acadCareer} to be a string`));
-        }
-
-        requestParams.send = `<SSR_GET_ENROLLMENT_REQ><SCC_ENTITY_INST_ID></SCC_ENTITY_INST_ID><EMPLID></EMPLID><ACAD_CAREER>${acadCareer}</ACAD_CAREER><INSTITUTION>UCINN</INSTITUTION><STRM></STRM><SSR_ENRL_GET_MODE>${payloadMode}</SSR_ENRL_GET_MODE></SSR_GET_ENROLLMENT_REQ>`;
-      }
-
-      Request.post(requestParams)
+      Request.post(params)
         .then(res => {
 
           let jRes;
@@ -142,7 +226,7 @@ let ArusPSConnector = {
             }
           });
 
-          let schedule = Serializer.schedule(jRes, payloadMode, model);
+          let schedule = Serializer.schedule(jRes, ssrEnrlGetMode, model);
 
           resolve(schedule);
         }).catch(err => {
@@ -162,9 +246,9 @@ let ArusPSConnector = {
     return new Promise((resolve, reject) => {
 
       if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
+        reject(new TypeError(`Type of requestParams is ${typeof requestParams}. Expected an object\n\trequestParams = ${requestParams}`));
       } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Expected ${model} to be a function`));
+        reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
       }
 
       Request.post(requestParams)
@@ -199,19 +283,40 @@ let ArusPSConnector = {
    */
   getNotifications(requestParams, model) {
 
+    let defaults;
+    try {
+      defaults = {
+        url: __NOTIFICATIONS_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        send: undefined,
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getNotificationsUrl'),
+        auth: [config.get('username'), config.get('password')],
+        send: undefined,
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (!params.send) {
+      params.send = `<SCC_GET_NOTIF_REQ><EMPLID></EMPLID></SCC_GET_NOTIF_REQ>`;
+    }
+
+    if (typeof params !== 'object') {
+      return Promise.reject(new TypeError(`Type of params is ${typeof params}. Expected an object\n\tparams = ${params}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    }
+
     return new Promise((resolve, reject) => {
-
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
-      } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Expected ${model} to be a function`));
-      }
-
-      if (!requestParams.send) {
-        requestParams.send = `<SCC_GET_NOTIF_REQ><EMPLID></EMPLID></SCC_GET_NOTIF_REQ>`;
-      }
-
-      Request.post(requestParams)
+      Request.post(params)
         .then(res => {
 
           let jRes;
@@ -243,25 +348,46 @@ let ArusPSConnector = {
    */
   getNotificationEvents(requestParams, model, numDaysPast = 10000, includeEvents = 'Y') {
 
+    let defaults;
+    try {
+      defaults = {
+        url: __EVENTS_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        send: undefined,
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getNotificationEventsUrl'),
+        auth: [config.get('username'), config.get('password')],
+        send: undefined,
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (!params.send) {
+      if (typeof numDaysPast !== 'number') {
+        return Promise.reject(new TypeError(`Type of numDaysPast is ${typeof numDaysPast}. Expected a number\n\tnumDaysPast = ${numDaysPast}`));
+      } else if (typeof includeEvents !== 'string') {
+        return Promise.reject(new TypeError(`Type of includeEvents is ${typeof includeEvents}. Expected a string\n\tincludeEvents = ${includeEvents}`));
+      }
+
+      params.send = `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>${numDaysPast}</NUM_PAST_DAYS><INCLUDE_EVENTS>${includeEvents}</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`;
+    }
+
+    if (typeof params !== 'object') {
+      return Promise.reject(new TypeError(`Type of params is ${typeof params}. Expected an object\n\tparams = ${params}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    }
+
     return new Promise((resolve, reject) => {
-
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
-      } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Expected ${model} to be a function`));
-      }
-
-      if (!requestParams.send) {
-        if (typeof numDaysPast !== 'number') {
-          reject(new TypeError(`Expected ${numDaysPast} to be a number`));
-        } else if (typeof includeEvents !== 'string') {
-          reject(new TypeError(`Expected ${includeEvents} to be a string`));
-        }
-
-        requestParams.send = `<SCC_NTF_GET_EVENTS_REQ_R><NUM_PAST_DAYS>${numDaysPast}</NUM_PAST_DAYS><INCLUDE_EVENTS>${includeEvents}</INCLUDE_EVENTS></SCC_NTF_GET_EVENTS_REQ_R>`;
-      }
-
-      Request.post(requestParams)
+      Request.post(params)
         .then(res => {
           let jRes;
           parseString(res.data, (err, parsedRes) => {
@@ -291,24 +417,46 @@ let ArusPSConnector = {
    */
   changeReadStatus(requestParams, id, status, numDaysPast = 7) {
 
+    let defaults;
+    try {
+      defaults = {
+        url: __MARK_AS_READ_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        send: undefined,
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('markAsReadUrl'),
+        auth: [config.get('username'), config.get('password')],
+        send: undefined,
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (!params.send) {
+      if (typeof id !== 'number') {
+        return Promise.reject(new TypeError(`Type of id is ${typeof id}. Expected an number\n\tid = ${id}`));
+      } else if (typeof status !== 'string') {
+        return Promise.reject(new TypeError(`Type of status is ${typeof status}. Expected an string\n\tstatus = ${status}`));
+      } else if (typeof numDaysPast !== 'number') {
+        return Promise.reject(new TypeError(`Type of numDaysPast is ${typeof numDaysPast}. Expected an number\n\tnumDaysPast = ${numDaysPast}`));
+      }
+
+      params.send = `<SCC_NTF_UPDATE_EVENTS_REQ><NUM_PAST_DAYS>${numDaysPast}</NUM_PAST_DAYS><EVENTS><SCC_NTF_EVENT><SCC_NTFEVT_REQ_ID>${id}</SCC_NTFEVT_REQ_ID><SCC_NTFEVT_STATUS>${status}</SCC_NTFEVT_STATUS></SCC_NTF_EVENT></EVENTS></SCC_NTF_UPDATE_EVENTS_REQ>`;
+    }
+
+    if (typeof params !== 'object') {
+      return Promise.reject(new TypeError(`Type of params is ${typeof params}. Expected an object\n\tparams = ${params}`));
+    }
+
     return new Promise((resolve, reject) => {
-
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Expected ${requestParams} to be an object`));
-      }
-
-      if (!requestParams.send) {
-        if (typeof id !== 'number') {
-          reject(new TypeError(`Expected ${id} to be an number`));
-        } else if (typeof status !== 'string') {
-          reject(new TypeError(`Expected ${status} to be an string`));
-        } else if (typeof numDaysPast !== 'number') {
-          reject(new TypeError(`Expected ${numDaysPast} to be an number`));
-        }
-
-        requestParams.send = `<SCC_NTF_UPDATE_EVENTS_REQ><NUM_PAST_DAYS>${numDaysPast}</NUM_PAST_DAYS><EVENTS><SCC_NTF_EVENT><SCC_NTFEVT_REQ_ID>${id}</SCC_NTFEVT_REQ_ID><SCC_NTFEVT_STATUS>${status}</SCC_NTFEVT_STATUS></SCC_NTF_EVENT></EVENTS></SCC_NTF_UPDATE_EVENTS_REQ>`;
-      }
-      Request.post(requestParams)
+      Request.post(params)
         .then(res => {
           resolve(res);
         }).catch(err => {
