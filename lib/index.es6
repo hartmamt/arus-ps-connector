@@ -1,8 +1,8 @@
-var parseString = require('xml2js').parseString;
+import { parseString } from 'xml2js';
 import Request from './Request.js';
 import Serializer from './Serializer.js';
 
-var ArusPSConnector = {
+let ArusPSConnector = {
 
   /**
    * Retrieves Profile information.
@@ -21,7 +21,7 @@ var ArusPSConnector = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getProfile': function(requestParams, model) {
+  getProfile(requestParams, model) {
 
     return new Promise((resolve, reject) => {
       if (typeof requestParams !== 'object') {
@@ -69,10 +69,9 @@ var ArusPSConnector = {
    * }
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getPicture': function(requestParams, model) {
+  getPicture(requestParams, model) {
 
     return new Promise((resolve, reject) => {
-
       if (typeof requestParams !== 'object') {
         reject(new TypeError(`Expected ${requestParams} to be an object`));
       } else if (model !== undefined && typeof model !== 'function') {
@@ -111,7 +110,7 @@ var ArusPSConnector = {
    * or 3 and defaults to 1
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getSchedule': function(requestParams, model, payloadMode = 1, acadCareer = 'UGRD') {
+  getSchedule(requestParams, model, payloadMode = 1, acadCareer = 'UGRD') {
 
     return new Promise((resolve, reject) => {
 
@@ -158,7 +157,7 @@ var ArusPSConnector = {
    * @method getSubjects
    * @static
    */
-  'getSubjects': function(requestParams, model) {
+  getSubjects(requestParams, model) {
 
     return new Promise((resolve, reject) => {
 
@@ -198,7 +197,7 @@ var ArusPSConnector = {
    * request
    * @return {Promise} - returns a Promise of a serialized remote request response
    */
-  'getNotifications': function(requestParams, model) {
+  getNotifications(requestParams, model) {
 
     return new Promise((resolve, reject) => {
 
@@ -242,7 +241,7 @@ var ArusPSConnector = {
    * request
    * @return {Promise} - returns a Promise of the serialized remote request response
    */
-  'getNotificationEvents': function(requestParams, model, numDaysPast = 10000, includeEvents = 'Y') {
+  getNotificationEvents(requestParams, model, numDaysPast = 10000, includeEvents = 'Y') {
 
     return new Promise((resolve, reject) => {
 
@@ -290,7 +289,7 @@ var ArusPSConnector = {
    * @params {Object} requestParams - an object containing the fields needed to create the remote
    * request
    */
-  'changeReadStatus': function(requestParams, id, status, numDaysPast = 7) {
+  changeReadStatus(requestParams, id, status, numDaysPast = 7) {
 
     return new Promise((resolve, reject) => {
 

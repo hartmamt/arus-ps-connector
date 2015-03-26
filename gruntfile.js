@@ -4,21 +4,23 @@ module.exports = function(grunt) {
 
     concat: {
       options: {
-        process: function(src, filepath) {
-          return src.replace(/(?:\/\*.*\*\/|\/\/.*)$\r\n(^.*$)/gm, '$1');
+        process: function(src) {
+          src = src.replace(/(?:\/\*.*\*\/|\/\/.*)$\r\n(^.*$)/gm, '$1');
+          var imports;
+          return src;
         }
         // ,footer: 'module.exports = ArusPSConnector;\n'
       },
       dist: {
-        src: ['config.js', 'lib/**/*.js'],
-        dest: 'build/compiled.js'
+        src: ['config.js', 'lib/**/*.js', 'lib/**/*.es6'],
+        dest: 'build/concatenated.es6'
       }
     },
 
     babel: {
       dist: {
         files: {
-          'index.js': 'build/compiled.js'
+          'index.js': 'build/concatenated.es6'
         }
       }
     },
@@ -32,7 +34,7 @@ module.exports = function(grunt) {
         }
       },
       scripts: {
-        files: ['config.js', 'lib/**/*.js'],
+        files: ['config.js', 'lib/**/*.js', 'lib/**/*.es6'],
         tasks: ['concat', 'babel'],
         options: {
           debounceDelay: 250
@@ -42,8 +44,8 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('default', ['concat', 'babel', 'watch']);
 };
