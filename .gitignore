@@ -40,3 +40,4 @@ test.json
 # Generated files
 build/
 test/build/
+generated/
