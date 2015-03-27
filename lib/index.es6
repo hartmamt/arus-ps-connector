@@ -1,11 +1,13 @@
 import { parseString } from 'xml2js';
+import { getCached, setCached } from './cache.js';
+
+import config from '../config.js';
 import Request from './Request.js';
 import Serializer from './Serializer.js';
 
-import config from '../config.js';
-import { getCached, setCached } from './cache.js';
 
-var ArusPSConnector = {
+// TODO: update jsdoc
+let ArusPSConnector = {
 
   /**
    * Retrieves Profile information.
