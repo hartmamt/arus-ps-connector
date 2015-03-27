@@ -1,6 +1,6 @@
 {
   "name": "arus-ps-connector",
-  "version": "0.7.3-gulp",
+  "version": "0.8.2-alpha",
   "description": "A PeopleSoft Connector for Arus",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "build-prod-win": "set NODE_ENV=production&& webpack --progress --colors -p",
     "build-test-win": "set NODE_ENV=test&& webpack --progress --colors --watch",
     "start": "webpack-dev-server --progress --colors",
-    "test": "eslint ."
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -25,25 +25,27 @@
   },
   "homepage": "https://github.com/arus-project/arus-ps-connector",
   "dependencies": {
+    "babel": "^4.7.13",
+    "babel-core": "^4.7.13",
     "moment": "^2.9.0",
     "superagent": "^0.21.0",
     "underscore": "^1.7.0",
     "xml2js": "^0.4.4"
   },
   "devDependencies": {
-    "6to5": "^3.3.10",
-    "6to5-core": "^3.3.10",
-    "6to5-loader": "^3.0.0",
-    "babel": "^4.7.13",
-    "babel-core": "^4.7.13",
     "babel-eslint": "^1.0.12",
     "babel-loader": "^4.2.0",
+    "chai-as-promised": "^4.3.0",
     "convict": "^0.6.1",
     "del": "^1.1.1",
     "eslint": "^0.15.1",
     "gulp": "^3.8.11",
     "gulp-babel": "^4.0.0",
     "gulp-concat": "^2.5.2",
+    "grunt": "^0.4.5",
+    "grunt-babel": "^4.0.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-watch": "^0.6.1",
     "webpack": "^1.5.3",
     "webpack-dev-server": "^1.7.0"
   }

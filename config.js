@@ -39,6 +39,16 @@ var conf = convict({
     default: '',
     env: 'SCHEDULE_URL'
   },
+  getSubjectsUrl: {
+    doc: 'The REST Endpoint to call for Subject data',
+    default: '',
+    env: 'SUBJECTS_URL'
+  },
+  getCoursesBySubjectUrl: {
+    doc: 'The REST Endpoint to call for Course data',
+    default: '',
+    env: 'COURSES_URL'
+  },
   getNotificationsUrl: {
     doc: 'The REST Endpoint to call for notifications',
     default: '',
@@ -49,7 +59,7 @@ var conf = convict({
     default: '',
     env: 'EVENTS_URL'
   },
-  changeReadStatusUrl: {
+  markAsReadUrl: {
     doc: 'The REST Endpoint to mark a notification as read',
     default: '',
     env: 'CHANGE_READ_STATUS_URL'
