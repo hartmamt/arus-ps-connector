@@ -1,7 +1,7 @@
 import { parseString } from 'xml2js';
 import { getCached, setCached } from './cache.js';
 
-import config from '../config.js';
+import config from '../../config.js';
 import Request from './Request.js';
 import Serializer from './Serializer.js';
 
@@ -243,16 +243,49 @@ let ArusPSConnector = {
    * @method getSubjects
    * @static
    */
-  getSubjects(requestParams, model) {
+  getSubjects(requestParams, model, useCache = true, institution = 'UCINN', subject = '') {
+
+    let cachedPicture = getCached('subjects', institution);
+
+    if (typeof useCache !== 'boolean') {
+      return Promise.reject(new TypeError(`Type of useCache is ${typeof useCache}. Expected a boolean\n\tuseCache = ${useCache}`));
+    } else if (useCache && cachedPicture) {
+      return Promise.resolve(cachedPicture);
+    }
+
+    if (typeof requestParams !== 'object') {
+      return Promise.reject(new TypeError(`Type of requestParams is ${typeof requestParams}. Expected an object\n\trequestParams = ${requestParams}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    }
+
+    let defaults;
+    try {
+      defaults = {
+        url: __SUBJECTS_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        send: undefined,
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getSubjectsUrl'),
+        auth: [config.get('username'), config.get('password')],
+        send: undefined,
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (!params.send) {
+      params.send = `<SSR_GET_COURSES_REQ><COURSE_SEARCH_REQUEST><INSTITUTION>${institution}</INSTITUTION><SUBJECT>${subject}</SUBJECT><SSR_CRS_SRCH_MODE>H</SSR_CRS_SRCH_MODE></COURSE_SEARCH_REQUEST></SSR_GET_COURSES_REQ>`;
+    }
 
     return new Promise((resolve, reject) => {
-
-      if (typeof requestParams !== 'object') {
-        reject(new TypeError(`Type of requestParams is ${typeof requestParams}. Expected an object\n\trequestParams = ${requestParams}`));
-      } else if (model !== undefined && typeof model !== 'function') {
-        reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
-      }
-
       Request.post(requestParams)
         .then(res => {
 
@@ -271,6 +304,72 @@ let ArusPSConnector = {
         }).catch(err => {
           reject(err);
         });
+    });
+  },
+
+  getCourses(requestParams, model, subject, useCache = true, institution = 'UCINN') {
+
+    if (typeof subject !== 'string') {
+      return Promise.reject(new TypeError(`Type of subject is ${typeof subject}. Expected a string\n\tsubject = ${subject}`));
+    }
+
+    let cachedPicture = getCached(['courses', institution, subject]);
+
+    if (typeof useCache !== 'boolean') {
+      return Promise.reject(new TypeError(`Type of useCache is ${typeof useCache}. Expected a boolean\n\tuseCache = ${useCache}`));
+    } else if (useCache && cachedPicture) {
+      return Promise.resolve(cachedPicture);
+    }
+
+    if (typeof requestParams !== 'object') {
+      return Promise.reject(new TypeError(`Type of requestParams is ${typeof requestParams}. Expected an object\n\trequestParams = ${requestParams}`));
+    } else if (model !== undefined && typeof model !== 'function') {
+      return Promise.reject(new TypeError(`Type of model is ${typeof model}. Expected a function\n\tmodel = ${model}`));
+    }
+
+    let defaults;
+    try {
+      defaults = {
+        url: __COURSES_URL__,
+        auth: [__USERNAME__, __PASSWORD__],
+        send: undefined,
+        headers: undefined
+      };
+    } catch (err) {
+      defaults = {
+        url: config.get('getCoursesUrl'),
+        auth: [config.get('username'), config.get('password')],
+        send: undefined,
+        headers: undefined
+      };
+    }
+
+    let params = defaults;
+    if (requestParams) {
+      Object.keys(defaults).map(key => params[key] = requestParams[key] || defaults[key]);
+    }
+
+    if (!params.send) {
+      params.send = `<SSR_GET_COURSES_REQ><COURSE_SEARCH_REQUEST><INSTITUTION>${institution}</INSTITUTION><SUBJECT>${subject}</SUBJECT><SSR_CRS_SRCH_MODE>D</SSR_CRS_SRCH_MODE></COURSE_SEARCH_REQUEST></SSR_GET_COURSES_REQ>`;
+    }
+
+    return new Promise((resolve, reject) => {
+      Request.post(params)
+        .then(res => {
+
+          let jRes;
+          parseString(res.data, (err, parsedRes) => {
+            if (!err) {
+              jRes = parsedRes;
+            } else {
+              reject(err);
+            }
+          });
+
+          let courses = Serializer.courses(jRes, model);
+
+          resolve(courses);
+        }).catch(reject);
     });
   },
 

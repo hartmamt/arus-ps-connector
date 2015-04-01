@@ -2,9 +2,9 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
-import Request from '../lib/Request.js';
-import ArusPSConnector from '../lib/index.js';
-import Notification from '../lib/models/Notification.js';
+import Request from '../lib/js/Request.js';
+import ArusPSConnector from '../lib/js/index.js';
+import Notification from '../lib/js/models/Notification.js';
 
 chai.should();
 chai.use(chaiAsPromised);

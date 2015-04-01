@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var config = require('./config.js');
+var path = require('path');
 
 var env = config.get('env');
 
@@ -58,15 +59,14 @@ var prodConfig = {
 var testConfig = {
   name: 'test',
   entry: {
-    ArusPSConnector: './index.js'
+    ArusPSConnectorTests: './test/tests.js'
   },
   output: {
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'var',
     library: 'ArusPSConnector',
-    path: './test/build',
+    path: path.join(__dirname, './test/build'),
     filename: '[name].js'
   },
-  externals: commonConfig.externals,
   module: commonConfig.module,
   plugins: commonConfig.plugins
 };

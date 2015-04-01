@@ -4,6 +4,8 @@ import _ from 'underscore';
 import Profile from './models/Profile.js';
 import Picture from './models/Picture.js';
 import Schedule from './models/Schedule.js';
+import Subjects from './models/Subjects.js';
+import Courses from './models/Courses.js';
 import Notification from './models/Notification.js';
 import NtfEvent from './models/NtfEvent.js';
 /* eslint-enable */
@@ -71,6 +73,10 @@ class Serializer {
    */
   static subjects(subjectsData, model = Subjects) {
     return model.create(serialize(subjectsData));
+  }
+
+  static courses(coursesData, model = Courses) {
+    return model.create(serialize(coursesData));
   }
 
   /**

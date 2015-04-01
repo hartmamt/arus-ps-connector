@@ -44,7 +44,7 @@ var conf = convict({
     default: '',
     env: 'SUBJECTS_URL'
   },
-  getCoursesBySubjectUrl: {
+  getCoursesUrl: {
     doc: 'The REST Endpoint to call for Course data',
     default: '',
     env: 'COURSES_URL'

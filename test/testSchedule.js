@@ -2,9 +2,9 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
-import Request from '../lib/Request.js';
-import ArusPSConnector from '../lib/index.js';
-import Schedule from '../lib/models/Schedule.js';
+import Request from '../lib/js/Request.js';
+import ArusPSConnector from '../lib/js/index.js';
+import Schedule from '../lib/js/models/Schedule.js';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -21,7 +21,7 @@ describe('Schedule', () => {
     };
 
     it('should return ok', () => {
-      return Request.post(params).should.be.fulfilled;
+      return Request.post(params).should.eventually.be.fulfilled;
     });
 
     it('should return data', () => {

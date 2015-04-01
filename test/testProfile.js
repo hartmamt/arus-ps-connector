@@ -2,9 +2,9 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
-import Request from '../lib/Request.js';
-import ArusPSConnector from '../lib/index.js';
-import Profile from '../lib/models/Profile.js';
+import Request from '../lib/js/Request.js';
+import ArusPSConnector from '../lib/js/index.js';
+import Profile from '../lib/js/models/Profile.js';
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -13,8 +13,7 @@ describe('Profile', () => {
   describe('#getProfile', () => {
     let params = {
       url: config.get('getProfileUrl'),
-      auth: [config.get('username'), config.get('password')],
-      acceptType: 'application/xml'
+      auth: [config.get('username'), config.get('password')]
     };
 
     it('should return ok', () => {

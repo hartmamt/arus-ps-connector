@@ -12,7 +12,7 @@
     "build-prod-win": "set NODE_ENV=production&& webpack --progress --colors -p",
     "build-test-win": "set NODE_ENV=test&& webpack --progress --colors --watch",
     "start": "webpack-dev-server --progress --colors",
-    "test": "mocha"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -39,11 +39,14 @@
     "convict": "^0.6.1",
     "del": "^1.1.1",
     "eslint": "^0.15.1",
+    "fs": "0.0.2",
     "gulp": "^3.8.11",
     "gulp-add": "0.0.2",
     "gulp-babel": "^4.0.0",
     "gulp-concat": "^2.5.2",
+    "gulp-mocha": "^2.0.1",
     "gulp-rename": "^1.2.0",
+    "mocha": "^2.2.1",
     "webpack": "^1.5.3",
     "webpack-dev-server": "^1.7.0"
   }

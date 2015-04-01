@@ -2,9 +2,9 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import config from '../config.js';
 
-import Request from '../lib/Request.js';
-import ArusPSConnector from '../lib/index.js';
-import NtfEvent from '../lib/models/NtfEvent.js';
+import Request from '../lib/js/Request.js';
+import ArusPSConnector from '../lib/js/index.js';
+import NtfEvent from '../lib/js/models/NtfEvent.js';
 
 chai.should();
 chai.use(chaiAsPromised);

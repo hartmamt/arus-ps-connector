@@ -1,8 +1,10 @@
+// require('babel/register');
 var fs = require('fs');
 var gulp = require('gulp');
 var babel = require('gulp-babel');
 var del = require('del');
 var rename = require('gulp-rename');
+var mocha = require('gulp-mocha');
 
 function changedJsWarning(event) {
   var relPath = event.path.replace(/.*((\/|\\)lib\2js\2.*?\.js)/, '.$1');
@@ -70,10 +72,51 @@ gulp.task('watchEs6', ['generateJs'], function() {
  * Watches for changes in the `lib/js` directory and warns the user when it notices one if the
  * changes weren't spawned by a change in the `lib/es6` directory
  */
-gulp.task('watchJs', function() {
+gulp.task('watchJs', ['generateJs'], function() {
   gulp.watch('./lib/js/**/*.js', function(event) {
     if (!fs.existsSync('./generated/changedEs6.txt')) {
       changedJsWarning(event);
     }
   });
+});
+
+require('babel/register');
+gulp.task('test', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ timeout: 20000 }));
+});
+
+gulp.task('test:Courses', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Courses', timeout: 10000 }));
+});
+
+gulp.task('test:Event', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Events' }));
+});
+
+gulp.task('test:Notification', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Notification' }));
+});
+
+gulp.task('test:Picture', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Picture' }));
+});
+
+gulp.task('test:Profile', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Profile' }));
+});
+
+gulp.task('test:Schedule', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Schedule' }));
+});
+
+gulp.task('test:Subjects', function() {
+  return gulp.src('./test/*.js')
+    .pipe(mocha({ grep: 'Subjects', timeout: 20000 }));
 });
