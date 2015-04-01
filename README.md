@@ -22,7 +22,6 @@ An example `requestParams` object for the previous methods might look like:
 var requestParams = {
   url: 'someRequestUrl',
   auth: ['username', 'password'],
-  acceptType: 'application/json',
   headers: {
     someHeader: 'someValue',
     someOtherHeader: 'someOtherValue'
