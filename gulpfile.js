@@ -15,12 +15,22 @@ gulp.task('default', ['cleanSlate', 'generateJs']);
 
 gulp.task('watch', ['cleanSlate', 'generateJs', 'watchEs6', 'watchJs']);
 
+/**
+ * Deletes the `lib/js` directory to clean out files deleted in `lib/es6`
+ */
 gulp.task('cleanSlate', function() {
   del(['./lib/js/**/*.js']);
 });
 
+/**
+ * Generates the `lib/js` directory from the transpiled `lib/es6` directory
+ */
 gulp.task('generateJs', ['cleanSlate', 'setChangedEs6', 'transpileEs6', 'cleanup']);
 
+/**
+ * Creates a `.txt` file that lets gulp know that it shouldn't throw an error when modifying the
+ * `lib/js` directory
+ */
 gulp.task('setChangedEs6', function() {
   if (!fs.existsSync('./generated')) {
     fs.mkdirSync('./generated');
@@ -28,36 +38,42 @@ gulp.task('setChangedEs6', function() {
   fs.writeFileSync('./generated/changedEs6.txt', 'true');
 });
 
-gulp.task('transpileEs6', ['cleanSlate', 'setChangedEs6', 'changeExtension'], function() {
-  return gulp.src('./generated/renamed/**/*.js')
-    .pipe(babel())
-    .pipe(gulp.dest('./lib/js'));
-});
-
-gulp.task('changeExtension', function() {
+/**
+ * Transpiles the `.es6` files into javascript and gives them the extension `.js`
+ */
+gulp.task('transpileEs6', ['cleanSlate', 'setChangedEs6'], function() {
   return gulp.src('./lib/es6/**/*.es6')
+    .pipe(babel())
     .pipe(rename(function(srcpath) {
       srcpath.extname = '.js';
     }))
-    .pipe(gulp.dest('./generated/renamed'));
+    .pipe(gulp.dest('./lib/js'));
 });
 
+/**
+ * Deletes the `./generated` directory
+ */
 gulp.task('cleanup', ['setChangedEs6', 'transpileEs6'], function(cb) {
   setTimeout(function () {
     del(['./generated'], cb);
   }, 1000);
 });
 
+/**
+ * Watches for changes in `lib/es6` directory and fires the `generateJs` task when it notices one
+ */
 gulp.task('watchEs6', ['generateJs'], function() {
   gulp.watch('./lib/es6/**/*.es6', ['generateJs']);
 });
 
+/**
+ * Watches for changes in the `lib/js` directory and warns the user when it notices one if the
+ * changes weren't spawned by a change in the `lib/es6` directory
+ */
 gulp.task('watchJs', function() {
-  var watcher = gulp.watch('./lib/js/**/*.js');
-  var cb = function(event) {
+  gulp.watch('./lib/js/**/*.js', function(event) {
     if (!fs.existsSync('./generated/changedEs6.txt')) {
       changedJsWarning(event);
     }
-  };
-  watcher.on('change', cb);
+  });
 });
